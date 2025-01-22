@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Calendar Plugin
- * Plugin URI:        https://github.com/rav89lodz/wordpress-calendar-plugin
+ * Plugin URI:        https://github.com/rav89lodz/wordpress-calendar-plugin-2
  * Description:       Calendar Plugin for modern term reservation form
  * Version:           1.0.0
  * Requires at least: 6.6.2
@@ -10,7 +10,7 @@
  * Author:            Rafał Chęciński
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Update URI:        https://github.com/rav89lodz/wordpress-calendar-plugin
+ * Update URI:        https://github.com/rav89lodz/wordpress-calendar-plugin-2
  * Text Domain:       calendar-plugin
  * Domain Path:       /languages
  */
