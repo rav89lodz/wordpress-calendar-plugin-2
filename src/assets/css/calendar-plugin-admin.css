@@ -1,0 +1,76 @@
+.admin-menu-button {
+    margin-top: 20px;
+}
+
+.my-alert-success {
+    display: none;
+}
+
+.my-alert-error {
+    display: none;
+}
+
+.admin-field-mb {
+    margin-bottom: 10px;
+}
+
+.admin-check-input {
+    margin-bottom: 3px;
+    font-size: 16px;
+}
+
+.admin-field-text-small {
+    font-size: 14px;
+}
+
+.hr1 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.hr2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.admin-field-checkbox {
+    margin: 0.4rem 0.5rem 0 -1rem !important;
+}
+
+.container-fluid {
+    background-color: #d6d6d4;
+    padding-bottom: 40px;
+}
+
+.plugin-notification-copy-clipboard {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    display: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.notification-clipboard-error {
+    background-color: orangered;
+}
+
+.my-padding-class a {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+}
+
+.my-plugin-form-group {
+    margin-bottom: 3px;
+}
