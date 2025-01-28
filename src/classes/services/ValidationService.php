@@ -26,7 +26,7 @@ class ValidationService
      */
     public function validate_data($data) {
         $toReturn = [];
-        if($this->recaptcha_verification() === false) {
+        if($this->model->get_calendar_captcha_secret_key() !== null && ! empty($this->model->get_calendar_captcha_secret_key()) && $this->recaptcha_verification() === false) {
             return $toReturn;
         }
 

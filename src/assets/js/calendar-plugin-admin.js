@@ -243,9 +243,8 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
         } else {
             activity_type.value = null;
         }
-
-        plugin_grid_data_events();
-    }    
+    }
+	plugin_grid_data_events();
 }
 
 function grid_edit_action() {

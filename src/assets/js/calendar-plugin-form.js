@@ -9,7 +9,12 @@ function calendar_form_setup() {
         let get_rest_url_value = null;
         if(get_rest_url) {
             get_rest_url_value = get_rest_url.value;
-        }
+        } else {
+			get_rest_url = document.querySelector("#get_rest_url2");
+			if(get_rest_url) {
+				get_rest_url_value = get_rest_url.value;
+			}
+		}
 
         let modal_form = document.querySelector('#calendarFormModalAddActivity');
         if(modal_form) {
@@ -32,7 +37,7 @@ function calendar_form_setup() {
             submit_calendar_modal_form_add_activity.addEventListener('click', (e) => {
                 e.preventDefault();
                 let site_key = e.target.getAttribute('data-target');
-                console.log(site_key, grecaptcha);
+
                 if(site_key !== null && site_key !== "") {
                     grecaptcha.ready(function() {
                         grecaptcha.execute("" + site_key, {

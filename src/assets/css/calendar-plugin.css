@@ -82,6 +82,14 @@
     display: none;
 }
 
+.my-alert-success2 {
+    display: none;
+}
+
+.my-alert-error2 {
+    display: none;
+}
+
 .flex-cell {
     display: flex;
     gap: 10px;

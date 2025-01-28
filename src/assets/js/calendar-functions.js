@@ -84,21 +84,49 @@ function calendar_form_submit(url, object_name) {
                 let response = parser.parseFromString(jsonResponse, "text/html");
     
                 if (xmlhttp.status === 200) {
-                    document.querySelector('.my-alert-success').style.display = "block";
-                    document.querySelector("#form_success").innerText = response.firstChild.innerText;
+					let alert_success = document.querySelector("#form_success");
+					if(alert_success) {
+						document.querySelector('.my-alert-success').style.display = "block";
+						alert_success.innerText = response.firstChild.innerText;
+					} else {
+						alert_success = document.querySelector("#form_success2");
+						if(alert_success) {
+							document.querySelector('.my-alert-success2').style.display = "block";
+							alert_success.innerText = response.firstChild.innerText;
+						}
+					}
                 }
                 else {
-                    document.querySelector('.my-alert-error').style.display = "block";
-                    document.querySelector("#form_error").innerText = response.firstChild.innerText;
+					let alert_error = document.querySelector("#form_error");
+					if(alert_error) {
+						document.querySelector('.my-alert-error').style.display = "block";
+                    	alert_error.innerText = response.firstChild.innerText;
+					} else {
+						alert_error = document.querySelector("#form_error2");
+						if(alert_error) {
+							document.querySelector('.my-alert-error2').style.display = "block";
+                    		alert_error.innerText = response.firstChild.innerText;
+						}
+					}
+                    
                 }
             }
             catch(error) {
                 console.error(error);
             } finally {
-                setTimeout(() => {
-                    document.querySelector('.my-alert-success').style.display = "none";
-                    document.querySelector('.my-alert-error').style.display = "none";
-                }, 3000);
+				let my_alert_success = document.querySelector('.my-alert-success');
+				let my_alert_error = document.querySelector('.my-alert-error');
+				if(my_alert_success === null) {
+					my_alert_success = document.querySelector('.my-alert-success2');
+					my_alert_error = document.querySelector('.my-alert-error2');
+				}
+				
+				if(my_alert_success) {
+					setTimeout(() => {
+						my_alert_success.style.display = "none";
+						my_alert_error.style.display = "none";
+					}, 3000);
+				}               
             }
         }
     }

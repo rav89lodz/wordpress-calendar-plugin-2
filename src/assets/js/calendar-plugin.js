@@ -9,7 +9,12 @@ function calendar_setup() {
     let get_rest_url_value = null;
     if(get_rest_url) {
         get_rest_url_value = get_rest_url.value;
-    }
+    } else {
+		get_rest_url = document.querySelector("#get_rest_url2");
+		if(get_rest_url) {
+			get_rest_url_value = get_rest_url.value;
+		}
+	}
 
     let calendar_date_picker = document.querySelector('#calendar_date_picker');
     if(calendar_date_picker) {
@@ -105,7 +110,12 @@ function modal_setup() {
         let get_rest_url_value = null;
         if(get_rest_url) {
             get_rest_url_value = get_rest_url.value;
-        }
+        } else {
+			get_rest_url = document.querySelector("#get_rest_url2");
+			if(get_rest_url) {
+				get_rest_url_value = get_rest_url.value;
+			}
+		}
 
         let modal1 = document.querySelector('#calendarFormModalCenter');
         let modal_object1 = new bootstrap.Modal(modal1, {});

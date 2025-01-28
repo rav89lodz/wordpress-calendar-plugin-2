@@ -67,6 +67,8 @@ if($calendarService->calendar->get_calendar_captcha_site_key() !== null) {
 
 ?>
 
+<script type='text/javascript' src="<?= $script ?>"></script>
+
 <div class="alert alert-success text-center my-alert-success" role="alert">
     <h4 class="alert-heading" id="form_success"></h4>
 </div>
@@ -307,9 +309,3 @@ if($calendarService->calendar->get_calendar_captcha_site_key() !== null) {
 </div>
 
 <?php endif; ?>
-
-<?php
-if($calendarService->calendar->get_calendar_captcha_site_key() !== null) {
-    echo "<script type='text/javascript' src='" . $script . "'></script>";
-}
-?>

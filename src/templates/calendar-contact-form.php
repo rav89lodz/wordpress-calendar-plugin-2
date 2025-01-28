@@ -4,9 +4,17 @@ use CalendarPlugin\src\classes\services\CalendarService;
 use CalendarPlugin\src\classes\services\LanguageService;
 
 $service = new LanguageService('modalFormFriendlyNames');
-
 $calendarService = new CalendarService();
+
 ?>
+<input type="hidden" id="get_rest_url2" value="<?= get_rest_url(null, 'v1') ?>">
+
+<div class="alert alert-success text-center my-alert-success2" role="alert">
+    <h4 class="alert-heading" id="form_success2"></h4>
+</div>
+<div class="alert alert-danger text-center my-alert-error2" role="alert">
+    <h4 class="alert-heading" id="form_error2"></h4>
+</div>
 
 <button type="button" id="calendarFormModalAddActivityButton" class="btn btn-primary" data-toggle="modal" data-target="#calendarFormModalAddActivity"><?= $service->langData['add_activity_active_button'] ?></button>
 
