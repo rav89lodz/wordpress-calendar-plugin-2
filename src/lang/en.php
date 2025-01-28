@@ -202,5 +202,9 @@ return [
         'calendar_grid_data_field9_name' => 'Number of seats for the activity',
         'calendar_grid_data_field9_description' => 'Define how many times the activity can be booked. The minimum value is 1.',
         'calendar_grid_data_field10_name' => 'Reservation status',
+        'calendar_grid_data_field11_name' => 'Start date of regular classes',
+        'calendar_grid_data_field11_description' => 'Set the start date for recurring classes. If you want the classes to run indefinitely, leave this field blank',
+        'calendar_grid_data_field12_name' => 'End date of regular classes',
+        'calendar_grid_data_field12_description' => 'Set the end date for recurring classes. If you want the classes to run indefinitely, leave this field blank',
     ],
 ];

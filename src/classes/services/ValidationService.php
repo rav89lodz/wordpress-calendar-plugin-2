@@ -26,8 +26,10 @@ class ValidationService
      */
     public function validate_data($data) {
         $toReturn = [];
-        if($this->model->get_calendar_captcha_secret_key() !== null && ! empty($this->model->get_calendar_captcha_secret_key()) && $this->recaptcha_verification() === false) {
-            return $toReturn;
+        if(isset($_POST['user_name_calendar_modal']) || isset($_POST['user_name_calendar_add_activity'])) {
+            if($this->model->get_calendar_captcha_secret_key() !== null && ! empty($this->model->get_calendar_captcha_secret_key()) && $this->recaptcha_verification() === false) {
+                return $toReturn;
+            }
         }
 
         foreach($data as $key => $value) {
@@ -135,6 +137,8 @@ class ValidationService
                 return $this->validator->validation_sequence_for_time($value);
             case 'activity_date':
             case 'calendar_modal_day_name':
+            case 'activity_day_start_date':
+            case 'activity_day_end_date':
                 return $this->validator->validation_sequence_for_date($value);
             case 'activity_bg_color':
                 if($this->validator->is_valid_hex_color($value)) {

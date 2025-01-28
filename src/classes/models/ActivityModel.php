@@ -11,6 +11,8 @@ class ActivityModel extends Model
     public $isCyclic;
     public $date;
     public $day;
+    public $startDateForDay;
+    public $endDateForDay;
     public $bgColor;
     public $type;
     public $rawType;
@@ -30,6 +32,8 @@ class ActivityModel extends Model
         $this->isCyclic = false;
         $this->date = null;
         $this->day = null;
+        $this->startDateForDay = null;
+        $this->endDateForDay = null;
         $this->bgColor = null;
         $this->type = null;
         $this->slot = null;
@@ -66,6 +70,12 @@ class ActivityModel extends Model
                     break;
                 case "activity_day":
                     $this->day = $value;
+                    break;
+                case "activity_day_start_date":
+                    $this->startDateForDay = $value;
+                    break;
+                case "activity_day_end_date":
+                    $this->endDateForDay = $value;
                     break;
                 case "activity_bg_color":
                     $this->bgColor = $value;
