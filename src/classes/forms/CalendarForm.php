@@ -73,6 +73,12 @@ abstract class CalendarForm
      * @return void
      */
     protected function get_cell_with_activity($calendar, $activity, $currentTime, $day, $oneDayId = null) {
+
+        if($this->is_date_in_cyclic_events_range_dates($activity, $this->datesOnThisWeek[$day - 1]) === false) {
+            echo "";
+            return;
+        }
+
         $id = $activity->id . "_" . $currentTime . "_" . $day . $oneDayId;
         $limit = $this->reservationService->check_reservation_limit($activity->id, $this->datesOnThisWeek[$day - 1]);
 
@@ -107,6 +113,38 @@ abstract class CalendarForm
         }
         
         echo "</div>";
+    }
+
+    /**
+     * Check date range for cyclic events
+     * 
+     * @param object|null activity
+     * @param string date
+     * @return bool
+     */
+    private function is_date_in_cyclic_events_range_dates($activity, $date) {
+        $startTimestamp = strtotime($activity->startDateForDay);
+        $endTimestamp = strtotime($activity->endDateForDay);
+
+        if($startTimestamp === false && $endTimestamp === false) {
+            return true;
+        }
+
+        $timestamp = strtotime($date);
+
+        if($startTimestamp === false && $timestamp <= $endTimestamp) {
+            return true;
+        }
+
+        if($endTimestamp === false && $timestamp >= $startTimestamp) {
+            return true;
+        };
+
+        if($timestamp >= $startTimestamp && $timestamp <= $endTimestamp) {
+            return true;
+        }       
+
+        return false;
     }
 
     /**

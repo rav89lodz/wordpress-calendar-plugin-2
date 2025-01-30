@@ -200,9 +200,7 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
         activity_day.removeAttribute('required');
         activity_day.value = "monday";
         activity_day_start_date.value = null;
-        activity_day_start_date.removeAttribute('required');
         activity_day_end_date.value = null;
-        activity_day_end_date.removeAttribute('required');
     } else {
         activity_name.value = data[1];
         activity_start_at.value = data[2];
@@ -220,9 +218,7 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
             activity_day.setAttribute('required', true);
             activity_cyclic_hidden.value = 1;
             activity_day_start_date.value = data[7];
-            activity_day_start_date.setAttribute('required', true);
             activity_day_end_date.value = data[8];
-            activity_day_end_date.setAttribute('required', true);
 
         } else {
             activity_date_div.classList.remove('d-none');
@@ -231,9 +227,7 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
             activity_day.removeAttribute('required');
             activity_cyclic_hidden.value = 0;
             activity_day_start_date.value = null;
-            activity_day_start_date.removeAttribute('required');
             activity_day_end_date.value = null;
-            activity_day_end_date.removeAttribute('required');
         }
         
         activity_date.value = (data[5] == "" ? null : data[5]);
@@ -542,8 +536,6 @@ function plugin_grid_data_events() {
             if(activity_cyclic.checked === true) {
                 activity_day_div.classList.remove('d-none');
                 activity_day.setAttribute('required', true);
-                activity_day_start_date.setAttribute('required', true);
-                activity_day_end_date.setAttribute('required', true);
                 activity_date_div.classList.add('d-none');
                 activity_date.removeAttribute('required');
                 activity_date.value = null;
@@ -556,9 +548,7 @@ function plugin_grid_data_events() {
                 activity_day.value = 'monday';
                 activity_cyclic_hidden.value = 0;
                 activity_day_start_date.value = null;
-                activity_day_start_date.removeAttribute('required');
                 activity_day_end_date.value = null;
-                activity_day_end_date.removeAttribute('required');
             }
         });
     }
@@ -651,9 +641,7 @@ function set_edit_form_for_grid_reservation(data) {
             activity_date.value = null;
             activity_day.value = "monday";
             activity_day_start_date.value = null;
-            activity_day_start_date.setAttribute('required', true);
             activity_day_end_date.value = null;
-            activity_day_end_date.setAttribute('required', true);
         } else {
             activity_cyclic.checked = false;
             activity_day_div.classList.add('d-none');
@@ -663,9 +651,7 @@ function set_edit_form_for_grid_reservation(data) {
             activity_date.value = data[5];
             activity_day.value = "monday";
             activity_day_start_date.value = null;
-            activity_day_start_date.removeAttribute('required');
             activity_day_end_date.value = null;
-            activity_day_end_date.removeAttribute('required');
         }
 
         plugin_grid_data_events();

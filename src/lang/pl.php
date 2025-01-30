@@ -203,8 +203,8 @@ return [
         'calendar_grid_data_field9_description' => 'Zdefiniuj ile razy można zarezerować zajęcia. Minimalna wartość to 1',
         'calendar_grid_data_field10_name' => 'Status rezerwacji',
         'calendar_grid_data_field11_name' => 'Data rozpoczęcia zajęć cyklicznych',
-        'calendar_grid_data_field11_description' => 'Ustaw datę rozpoczęcia zajęć cyklicznych. Jeśli chcesz, żeby zajęcia trwały bez ograniczeń czasowych, zostaw to pole puste',
+        'calendar_grid_data_field11_description' => 'Ustaw pierwszy dzień dla zajęć cyklicznych. Jeśli chcesz, żeby zajęcia trwały bez ograniczeń czasowych, zostaw to pole puste',
         'calendar_grid_data_field12_name' => 'Data zakończenia zajęć cyklicznych',
-        'calendar_grid_data_field12_description' => 'Ustaw datę zakończenia zajęć cyklicznych. Jeśli chcesz, żeby zajęcia trwały bez ograniczeń czasowych, zostaw to pole puste',
+        'calendar_grid_data_field12_description' => 'Ustaw ostatni dzień dla zajęć cyklicznych. Jeśli chcesz, żeby zajęcia trwały bez ograniczeń czasowych, zostaw to pole puste',
     ],
 ];
