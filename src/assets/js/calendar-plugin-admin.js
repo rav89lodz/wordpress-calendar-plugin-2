@@ -303,7 +303,7 @@ function grid_delete_action() {
                 let data = e.target.getAttribute('data-target');
                 data = data.split('|,|');
 
-                if(data.length === 11) {
+                if(data.length === 13) {
                     const hiddenInputDelete = document.createElement('input');
                     hiddenInputDelete.setAttribute("name", "activity_grid_id_delete");
                     hiddenInputDelete.type = "hidden";
