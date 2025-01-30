@@ -61,8 +61,13 @@ $days = [
 echo '<input type="hidden" id="days_names_array" value="' . implode('|,|', $days) . '">';
 
 $script = null;
-if($calendarService->calendar->get_calendar_captcha_site_key() !== null) {
+if($calendarService->calendar->get_calendar_captcha_site_key() !== null && ! isset($_SERVER['recaptcha_on'])) {
     $script = "https://www.google.com/recaptcha/api.js?render=" . $calendarService->calendar->get_calendar_captcha_site_key();
+    $_SERVER['recaptcha_on'] = "script run";
+}
+
+if($calendarService->calendar->get_calendar_captcha_site_key() === null && isset($_SERVER['recaptcha_on'])) {
+    unset($_SERVER['recaptcha_on']);
 }
 
 ?>

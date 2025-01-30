@@ -55,6 +55,10 @@ class AddGridActivityService
         }
 
         $result->activityStatus = $status;
+        $result->activityName = $data['activity_name'];
+        $result->activityTimeStart = $data['activity_start_at'];
+        $result->activityTimeEnd = $data['activity_end_at'];
+
         unset($result->id);
         unset($result->calendar_key_type);
         unset($result->created_at);
