@@ -89,6 +89,12 @@ class CalendarVerticalForm extends CalendarForm
         echo "<td>" . $currentTime . "</td>";
     
         for ($day = 1; $day <= 7; $day++) {
+            $excluded = $this->is_excluded_day_by_global_exclusion($this->datesOnThisWeek[$day - 1], $currentTime);
+            if($excluded !== null) {
+                echo "<td style='background-color: " . htmlspecialchars($excluded->excludedBgColor) . ";'><div>" . $excluded->excludedName . "</div></td>";
+                continue;
+            }
+
             if (! empty($groupedActivities[$currentTime][$day])) {
 
                 if($this->calendar->get_fluent_calendar_grid() === false) {

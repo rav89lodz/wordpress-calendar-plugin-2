@@ -49,6 +49,22 @@ return [
         'grid_status_label' => 'Status',
     ],
 
+    'excludedActivityFriendlyNames' => [
+        'excluded_activity_date' => 'Date of exclusion',
+        'excluded_activity_time_start' => 'Start time',
+        'excluded_activity_time_end' => 'End time',
+        'excluded_activity_name' => 'Description',
+        'excluded_activity_is_active' => 'Visible in the calendar',
+        'excluded_all_day_long' => 'All day long',
+    ],
+
+    'excludedActivityMenu' => [
+        'excluded_menu_description' => 'Calendar day exclusions',
+        'excluded_menu_name' => 'Exclusion days',
+        'excluded_menu_singular_name' => 'Excluded day',
+        'excluded_menu_meta_box_title' => 'Calendar day exclusions'
+    ],
+
     'addActivityMenu' => [
         'activity_menu_description' => 'Reservations for dates in the calendar',
         'activity_menu_name' => 'Reservations',
@@ -206,5 +222,17 @@ return [
         'calendar_grid_data_field11_description' => 'Set the first day for recurring classes. If you want the classes to run indefinitely, leave this field blank',
         'calendar_grid_data_field12_name' => 'End date of regular classes',
         'calendar_grid_data_field12_description' => 'Set the last day for recurring classes. If you want the classes to run indefinitely, leave this field blank',
+        'calendar_grid_data_field13_name' => 'Date of exclusion of regular classes',
+        'calendar_grid_data_field13_description' => 'Set date in yyyy-mm-dd format for event exclusion. If you want to set multiple dates, separate them with a semicolon ";"
+                    e.g. ' . date('Y') . '-01-31;'. date('Y') . '-05-31. If you want the exclusion to be yearly, set the date in the format %-mm-dd e.g. %-01-31',
+        'calendar_grid_data_field14_name' => 'Description visible in the calendar',
+        'calendar_grid_data_field14_description' => 'Please write why this day is unavailable, e.g. vacation, renovation',
+        'calendar_grid_data_field15_name' => 'Start time',
+        'calendar_grid_data_field16_name' => 'End time',
+        'calendar_grid_data_field17_name' => 'Tile color',
+        'calendar_grid_data_field17_description' => 'Select the color you want to highlight an unavailable day in the calendar',
+        'calendar_grid_data_field18_name' => 'Date of exclusion',
+        'calendar_grid_data_field19_name' => 'Select a class type from the calendar',
+        'calendar_grid_data_field19_description' => 'Select the type of class you want to mark as unavailable day',
     ],
 ];

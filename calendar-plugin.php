@@ -48,6 +48,7 @@ if (! class_exists('CalendarPlugin')) {
 
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/AddGridActivityService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/CalendarService.php');
+            require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/ExcludedActivityService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/GridPageService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/LanguageService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/OptionsPageService.php');
@@ -65,6 +66,7 @@ if (! class_exists('CalendarPlugin')) {
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/ActivityModel.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/AddGridActivityModel.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/CalendarModel.php');
+            require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/ExcludedActivityModel.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/MainSettingsModel.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/MessageModel.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/models/PlaceModel.php');

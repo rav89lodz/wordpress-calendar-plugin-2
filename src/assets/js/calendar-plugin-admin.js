@@ -18,6 +18,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     setup_delete_for_user_reservation();
     setup_update_for_user_reservation();
+
+    setup_update_for_excluded_activity();
+    setup_delete_for_excluded_activity();
 });
 
 function run_tooltip() {
@@ -89,6 +92,22 @@ function clean_up_activity_grid_form_group() {
     }
 }
 
+function clean_up_excluded_activity_form_group() {
+    let excluded_activity_form_group = document.querySelector('#excluded_activity_form_group');
+    if(excluded_activity_form_group) {
+        while (excluded_activity_form_group.firstChild) {
+            excluded_activity_form_group.removeChild(excluded_activity_form_group.lastChild);
+        }
+    }
+
+    let excluded_activity_form_group_2 = document.querySelector('#excluded_activity_form_group_2');
+    if(excluded_activity_form_group_2) {
+        while (excluded_activity_form_group_2.firstChild) {
+            excluded_activity_form_group_2.removeChild(excluded_activity_form_group_2.lastChild);
+        }
+    }
+}
+
 function place_edit_action() {
     let items = document.querySelectorAll('.btn-place-update-action');
     let activity_place_form_group = document.querySelector('#activity_place_form_group');
@@ -151,7 +170,20 @@ function set_element_visible_in_calendar() {
                 let object = {};
                 object["id"] = data;
                 object["activity_is_active"] = e.target.checked;
-                save_grid_menu_data(object);
+                save_grid_menu_data(object, '/calendar-admin-menu/grid-form');
+            });
+        });
+    }
+
+    let e_items = document.querySelectorAll('.calendar-excluded-activity-is-active');
+    if(e_items) {
+        e_items.forEach((item) => {
+            item.addEventListener('change', (e) => {
+                let data = e.target.getAttribute('data-target');
+                let object = {};
+                object["id"] = data;
+                object["activity_is_active"] = e.target.checked;
+                save_grid_menu_data(object, '/calendar-admin-menu/excluded-activity-form');
             });
         });
     }
@@ -170,6 +202,7 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
     let activity_type = document.querySelector('#activity_type');
     let activity_slot = document.querySelector('#activity_slot');
     let activity_is_active = document.querySelector('#activity_is_active');
+    let activity_exclusion_days = document.querySelector('#activity_exclusion_days');
 
     let activity_date_div = document.querySelector('#activity_date_div');
     let activity_day_div = document.querySelector('#activity_day_div');
@@ -201,13 +234,15 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
         activity_day.value = "monday";
         activity_day_start_date.value = null;
         activity_day_end_date.value = null;
+        activity_exclusion_days.value = null;
     } else {
         activity_name.value = data[1];
         activity_start_at.value = data[2];
         activity_end_at.value = data[3];
         activity_bg_color.value = data[9];
         activity_slot.value = data[11];
-        activity_is_active.value = data[12];
+        activity_exclusion_days.value = data[12];
+        activity_is_active.value = data[13];
 
         activity_cyclic.checked = (data[4] == 1 ? true : false);
 
@@ -219,6 +254,7 @@ function fill_or_clean_grid_data(data, places, fill_flag) {
             activity_cyclic_hidden.value = 1;
             activity_day_start_date.value = data[7];
             activity_day_end_date.value = data[8];
+            activity_exclusion_days.value = data[12];
 
         } else {
             activity_date_div.classList.remove('d-none');
@@ -270,7 +306,7 @@ function grid_edit_action() {
                 let places = e.target.getAttribute('data-places');
                 places = places.split('|,|');
 
-                if(data.length === 13) {
+                if(data.length === 14) {
                     fill_or_clean_grid_data(null, places, false);
                     fill_or_clean_grid_data(data, places, true);
 
@@ -303,7 +339,7 @@ function grid_delete_action() {
                 let data = e.target.getAttribute('data-target');
                 data = data.split('|,|');
 
-                if(data.length === 13) {
+                if(data.length === 14) {
                     const hiddenInputDelete = document.createElement('input');
                     hiddenInputDelete.setAttribute("name", "activity_grid_id_delete");
                     hiddenInputDelete.type = "hidden";
@@ -391,6 +427,15 @@ function calendar_admin_menu_setup() {
             show_modal_calendar_plugin_form("calendarFormModalAddGrid");
         });
     }
+
+    let excluded_button = document.querySelector('#calendarFormModalExcludedActivityButton');
+    if(excluded_button) {
+        excluded_button.addEventListener('click', (e) => {
+            e.preventDefault();
+            clean_up_excluded_activity_form_group();
+            show_modal_calendar_plugin_form("calendarFormModalExcludedActivity");
+        });
+    }
 }
 
 function show_modal_calendar_plugin_form(modal_name) {
@@ -452,14 +497,14 @@ function handle_plugin_rest_response(xmlhttp) {
     }
 }
 
-function save_grid_menu_data(object) {
+function save_grid_menu_data(object, path) {
     let get_rest_url = document.querySelector("#get_rest_url");
     let get_rest_url_value = '';
     if(get_rest_url) {
         get_rest_url_value = get_rest_url.value;
     }
 
-    let url = get_rest_url_value + '/calendar-admin-menu/grid-form';
+    let url = get_rest_url_value + path;
 
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
@@ -528,6 +573,7 @@ function plugin_grid_data_events() {
         let activity_day = document.querySelector('#activity_day');
         let activity_day_start_date = document.querySelector('#activity_day_start_date');
         let activity_day_end_date = document.querySelector('#activity_day_end_date');
+        let activity_exclusion_days = document.querySelector('#activity_exclusion_days');
         let activity_date = document.querySelector('#activity_date');
         let activity_date_div = document.querySelector('#activity_date_div');
         let activity_day_div = document.querySelector('#activity_day_div');
@@ -549,6 +595,7 @@ function plugin_grid_data_events() {
                 activity_cyclic_hidden.value = 0;
                 activity_day_start_date.value = null;
                 activity_day_end_date.value = null;
+                activity_exclusion_days.value = null;
             }
         });
     }
@@ -624,6 +671,7 @@ function set_edit_form_for_grid_reservation(data) {
     let activity_day = document.querySelector('#activity_day');
     let activity_day_start_date = document.querySelector('#activity_day_start_date');
     let activity_day_end_date = document.querySelector('#activity_day_end_date');
+    let activity_exclusion_days = document.querySelector('#activity_exclusion_days');
     let calendar_status = document.querySelector('#calendar_status');
 
     if(activity_name) {
@@ -642,6 +690,7 @@ function set_edit_form_for_grid_reservation(data) {
             activity_day.value = "monday";
             activity_day_start_date.value = null;
             activity_day_end_date.value = null;
+            activity_exclusion_days.value = null;
         } else {
             activity_cyclic.checked = false;
             activity_day_div.classList.add('d-none');
@@ -652,6 +701,7 @@ function set_edit_form_for_grid_reservation(data) {
             activity_day.value = "monday";
             activity_day_start_date.value = null;
             activity_day_end_date.value = null;
+            activity_exclusion_days.value = null;
         }
 
         plugin_grid_data_events();
@@ -711,6 +761,90 @@ function setup_update_for_user_reservation() {
                     calendar_status.value = data[3];
 
                     show_modal_calendar_plugin_form("calendarFormModalUpdateUsersReservation");
+                }
+            });
+        });
+    }
+}
+
+function setup_update_for_excluded_activity() {
+    let items = document.querySelectorAll('.btn-excluded-activity-update-action');
+    let excluded_activity_form_group = document.querySelector('#excluded_activity_form_group');
+
+    if(items !== null && items.length > 0) {
+        items.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                let data = e.target.getAttribute('data-target');
+                data = data.split('|,|');
+
+                if(data.length === 8) {
+                    const hiddenInputDelete = document.createElement('input');
+                    hiddenInputDelete.setAttribute("name", "excluded_activity_id_update");
+                    hiddenInputDelete.type = "hidden";
+                    hiddenInputDelete.value = data[0];
+
+                    set_edit_for_excluded_activity(data);
+
+                    excluded_activity_form_group.appendChild(hiddenInputDelete);
+                    show_modal_calendar_plugin_form("calendarFormModalExcludedActivity");
+                }
+            });
+        });
+    }
+}
+
+function set_edit_for_excluded_activity(data) {
+    let excluded_activity_name = document.querySelector('#excluded_activity_name');
+    let excluded_activity_start_at = document.querySelector('#excluded_activity_start_at');
+    let excluded_activity_end_at = document.querySelector('#excluded_activity_end_at');
+    let excluded_activity_date = document.querySelector('#excluded_activity_date');
+    let excluded_activity_bg_color = document.querySelector('#excluded_activity_bg_color');
+    let excluded_activity_type = document.querySelector('#excluded_activity_type');
+    let excluded_activity_is_active = document.querySelector('#excluded_activity_is_active');
+
+    if(excluded_activity_name) {
+        excluded_activity_name.value = data[1];
+        if(data[2] == "00:00") {
+            excluded_activity_start_at.value = null;
+        } else {
+            excluded_activity_start_at.value = data[2];
+        }
+
+        if(data[3] == "00:00") {
+            excluded_activity_end_at.value = null;
+        } else {
+            excluded_activity_end_at.value = data[3];
+        }
+
+        excluded_activity_date.value = data[4];
+        excluded_activity_type.value = data[5];
+        excluded_activity_bg_color.value = data[6];
+        excluded_activity_is_active.value = data[7];
+    }
+}
+
+function setup_delete_for_excluded_activity() {
+    let items = document.querySelectorAll('.btn-excluded-activity-delete-action');
+    let excluded_activity_item_to_remove = document.querySelector('#excluded_activity_item_to_remove');
+    let excluded_activity_form_group = document.querySelector('#excluded_activity_form_group_2');
+
+    if(items !== null && items.length > 0) {
+        items.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                let data = e.target.getAttribute('data-target');
+                data = data.split('|,|');
+
+                if(data.length === 8) {
+                    excluded_activity_item_to_remove.innerHTML = data[1] + "<br>" + data[4];
+
+                    const hiddenInputDelete = document.createElement('input');
+                    hiddenInputDelete.setAttribute("name", "excluded_activity_id_delete");
+                    hiddenInputDelete.type = "hidden";
+                    hiddenInputDelete.value = data[0];
+
+                    excluded_activity_form_group.appendChild(hiddenInputDelete);
+
+                    show_modal_calendar_plugin_form("calendarFormModalExcludedActivityRemove");
                 }
             });
         });

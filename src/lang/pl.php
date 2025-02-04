@@ -49,6 +49,22 @@ return [
         'grid_status_label' => 'Status',
     ],
 
+    'excludedActivityFriendlyNames' => [
+        'excluded_activity_date' => 'Data wykluczenia',
+        'excluded_activity_time_start' => 'Godzina rozpoczęcia',
+        'excluded_activity_time_end' => 'Godzina zakończenia',
+        'excluded_activity_name' => 'Opis',
+        'excluded_activity_is_active' => 'Widoczne w kalendarzu',
+        'excluded_all_day_long' => 'Cały dzień',
+    ],
+
+    'excludedActivityMenu' => [
+        'excluded_menu_description' => 'Wykluczenia dni w kalendarzu',
+        'excluded_menu_name' => 'Wykluczenia dni',
+        'excluded_menu_singular_name' => 'Wykluczenie dni',
+        'excluded_menu_meta_box_title' => 'Wykluczenia dni w kalendarzu'
+    ],
+
     'addActivityMenu' => [
         'activity_menu_description' => 'Rezerwacje terminów w kalendarzu',
         'activity_menu_name' => 'Rezerwacje',
@@ -206,5 +222,18 @@ return [
         'calendar_grid_data_field11_description' => 'Ustaw pierwszy dzień dla zajęć cyklicznych. Jeśli chcesz, żeby zajęcia trwały bez ograniczeń czasowych, zostaw to pole puste',
         'calendar_grid_data_field12_name' => 'Data zakończenia zajęć cyklicznych',
         'calendar_grid_data_field12_description' => 'Ustaw ostatni dzień dla zajęć cyklicznych. Jeśli chcesz, żeby zajęcia trwały bez ograniczeń czasowych, zostaw to pole puste',
+        'calendar_grid_data_field13_name' => 'Data wykluczenia zajęć cyklicznych',
+        'calendar_grid_data_field13_description' => 'Ustaw datę w formacie rrrr-mm-dd dla wykluczenia wydarzenia. Jeśli chcesz ustawić kilka dat, rozdziel je znakiem średnika ";"
+                    np. ' . date('Y') . '-01-31 ;'. date('Y') . '-05-31. Jeśli chcesz, aby wykluczenie było co roku, ustaw datę w formacie %-mm-dd np. %-01-31',
+        'calendar_grid_data_field14_name' => 'Opis widoczny w kalendarzu',
+        'calendar_grid_data_field14_description' => 'Napisz, dlaczego ten dzień jest niedostępny, np. urlop, remont',
+        'calendar_grid_data_field15_name' => 'Godzina rozpoczęcia',
+        'calendar_grid_data_field15_description' => 'Zostaw to pole puste, jeśli chcesz wykluczyć cały dzień',
+        'calendar_grid_data_field16_name' => 'Godzina zakończenia',
+        'calendar_grid_data_field17_name' => 'Kolor kafelka',
+        'calendar_grid_data_field17_description' => 'Wybierz kolor, którym chcesz wyróżnić niedostępny dzień w kalendarzu',
+        'calendar_grid_data_field18_name' => 'Data wykluczenia',
+        'calendar_grid_data_field19_name' => 'Wybierz typ zajęć z kalendarza',
+        'calendar_grid_data_field19_description' => 'Wybierz typ zajęć, które chcesz oznaczyć jako dzień niedostępny',
     ],
 ];

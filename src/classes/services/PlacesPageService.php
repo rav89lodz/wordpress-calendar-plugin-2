@@ -35,7 +35,7 @@ class PlacesPageService
      * @param array data
      * @return bool
      */
-    public function save_plugin_place_data($data) {
+    private function save_plugin_place_data($data) {
         $placeSettings = new PlaceModel($data);
         $result = $placeSettings->create(CalendarTypes::CALENDAR_PLACE, $placeSettings);
         $this->shortCode = $placeSettings->shortCode;
@@ -49,7 +49,7 @@ class PlacesPageService
      * @param array data
      * @return bool
      */
-    public function update_plugin_place_data($id, $data) {
+    private function update_plugin_place_data($id, $data) {
         $placeSettings = new PlaceModel($data);
         $result = $placeSettings->find($id);
         if($result === null || ! isset($result->shortCode)) {
@@ -66,7 +66,7 @@ class PlacesPageService
      * @param int id
      * @return bool
      */
-    public function delete_plugin_place_data($id) {
+    private function delete_plugin_place_data($id) {
         $placeSettings = new PlaceModel();
         $result = $placeSettings->find($id);
         if($result === null || ! isset($result->shortCode)) {

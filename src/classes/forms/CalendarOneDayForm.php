@@ -54,6 +54,16 @@ class CalendarOneDayForm extends CalendarForm
         while ($currentTime <= $endTime) {
             $activitiesGrouped = $this->group_activities_by_day_and_hour($activities, date('H:i', $currentTime));
 
+            $excluded = $this->is_excluded_day_by_global_exclusion($this->datesOnThisWeek[0], date('H:i', $currentTime));
+            if($excluded !== null) {
+                echo "<tr>";
+                echo "<td style='width:15%'>" . date('H:i', $currentTime) . "</td>";
+                echo "<td style='background-color: " . htmlspecialchars($excluded->excludedBgColor) . ";'><div>" . $excluded->excludedName . "</div></td></tr>";
+
+                $currentTime = strtotime($interval, $currentTime);
+                continue;
+            }
+
             $this->print_row_with_data($activitiesGrouped, date('H:i', $currentTime), $this->currentWeekDay);
 
             for($min = 5; $min < $this->calendar->get_calendar_interval() - 4; $min += 5) {

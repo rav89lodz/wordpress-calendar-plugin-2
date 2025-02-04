@@ -86,12 +86,14 @@ class ValidationService
             case 'calendar_plugin_end_time_on_grid':
             case 'activity_cyclic':
             case 'activity_is_active':
+            case 'excluded_activity_is_active':
                 return $this->validator->validation_sequence_for_checkbox($value);
             case 'calendar_plugin_cell_min_height':
             case 'calendar_plugin_grid_width':
             case 'calendar_plugin_grid_height':
             case 'calendar_plugin_interval':
             case 'activity_type':
+            case 'excluded_activity_type':
             case 'activity_slot':
             case 'calendar_modal_hidden_id':
             case 'activity_place_id_update':
@@ -122,6 +124,7 @@ class ValidationService
             case 'date_calendar_add_activity':
             case 'calendar_plugin_captcha_secret_key':
             case 'calendar_plugin_captcha_site_key':
+            case 'activity_exclusion_days':
                 return $this->validator->validation_sequence_for_text($value);
             case 'calendar_plugin_start_at':
             case 'calendar_plugin_end_at':
@@ -134,19 +137,24 @@ class ValidationService
             case 'time_start_calendar_add_activity':
             case 'time_end_calendar_add_activity':
             case 'calendar_modal_hour':
+            case 'excluded_activity_start_at':
+            case 'excluded_activity_end_at':
                 return $this->validator->validation_sequence_for_time($value);
             case 'activity_date':
+            case 'excluded_activity_date':
             case 'calendar_modal_day_name':
             case 'activity_day_start_date':
             case 'activity_day_end_date':
                 return $this->validator->validation_sequence_for_date($value);
             case 'activity_bg_color':
+            case 'excluded_activity_bg_color':
                 if($this->validator->is_valid_hex_color($value)) {
                     return $value;
                 }
                 return "#ff0000";
             case 'activity_place_description':
             case 'activity_name':
+            case 'excluded_activity_name':
             case 'user_name_calendar_add_activity':
             case 'name_calendar_add_activity':
             case 'user_name_calendar_modal':

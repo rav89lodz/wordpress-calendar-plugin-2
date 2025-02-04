@@ -7,6 +7,7 @@ if (! defined('ABSPATH')) {
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\models\PlaceModel;
 use CalendarPlugin\src\classes\services\AddGridActivityService;
+use CalendarPlugin\src\classes\services\ExcludedActivityService;
 use CalendarPlugin\src\classes\services\GridPageService;
 use CalendarPlugin\src\classes\services\LanguageService;
 use CalendarPlugin\src\classes\services\OptionsPageService;
@@ -73,6 +74,15 @@ function calendar_plugin_display_my_submenu_grid() {
 }
 
 /**
+ * Render submenu excluded activity
+ * 
+ * @return void
+ */
+function calendar_plugin_display_excluded_activity_submenu() {
+    include( CALENDAR_PLUGIN_PATH . '/src/templates/excluded-activity-form.php' );
+}
+
+/**
  * Render submenu add activity
  * 
  * @return void
@@ -96,7 +106,7 @@ function calendar_plugin_display_my_submenu_activity_reservation() {
  * @return void
  */
 function calendar_plugin_wp_admin_menu() {
-    $langService = new LanguageService(['optionPage', 'addActivityMenu', 'reservationMenu']);
+    $langService = new LanguageService(['optionPage', 'addActivityMenu', 'reservationMenu', 'excludedActivityMenu']);
 
     add_menu_page(
         $langService->langData['main_menu_settings'],
@@ -124,6 +134,15 @@ function calendar_plugin_wp_admin_menu() {
         'manage_options',
         'calendar-plugin-submenu-grid',
         'calendar_plugin_display_my_submenu_grid'
+    );
+
+    add_submenu_page(
+        'calendar-plugin-main-menu',
+        $langService->langData['excluded_menu_description'],
+        $langService->langData['excluded_menu_description'],
+        'manage_options',
+        'calendar-plugin-submenu-excluded-activity',
+        'calendar_plugin_display_excluded_activity_submenu'
     );
 
     add_submenu_page(
@@ -156,6 +175,11 @@ add_action('rest_api_init', function() {
     register_rest_route('v1/calendar-admin-menu', 'grid-form', [
         'methods' => 'POST',
         'callback' => 'handle_calendar_grid_menu_form',
+        'permission_callback' => [],
+    ]);
+    register_rest_route('v1/calendar-admin-menu', 'excluded-activity-form', [
+        'methods' => 'POST',
+        'callback' => 'handle_calendar_excluded_activity_form',
         'permission_callback' => [],
     ]);
     register_rest_route('v1/calendar-grid-change', 'day', [
@@ -221,6 +245,22 @@ function handle_calendar_grid_menu_form($data) {
     $data = $validationService->validate_data(json_decode($data->get_body()));
 
     $service = new GridPageService($data);
+    $response = $service->get_response_after_save();
+
+    return new WP_Rest_Response($response['message'], $response['code']);
+}
+
+/**
+ * Handle rest API endpoint
+ * 
+ * @param mixed data
+ * @return object|null
+ */
+function handle_calendar_excluded_activity_form($data) {
+    $validationService = new ValidationService;
+    $data = $validationService->validate_data(json_decode($data->get_body()));
+
+    $service = new ExcludedActivityService($data);
     $response = $service->get_response_after_save();
 
     return new WP_Rest_Response($response['message'], $response['code']);

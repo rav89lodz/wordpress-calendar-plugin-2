@@ -4,6 +4,7 @@ namespace CalendarPlugin\src\classes\forms;
 
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\models\ActivityModel;
+use CalendarPlugin\src\classes\models\ExcludedActivityModel;
 use CalendarPlugin\src\classes\services\LanguageService;
 use CalendarPlugin\src\classes\services\ReservationService;
 
@@ -12,6 +13,7 @@ abstract class CalendarForm
     protected $reservationService;
     protected $langService;
     protected $datesOnThisWeek;
+    protected $exclusionData;
 
     /**
      * Constructor
@@ -20,6 +22,8 @@ abstract class CalendarForm
         $this->reservationService = new ReservationService();
         $this->langService = new LanguageService(['calendarLabels', 'days', 'months']);
         $this->datesOnThisWeek = [];
+        $this->exclusionData = new ExcludedActivityModel();
+        $this->exclusionData = $this->exclusionData->all(CalendarTypes::CALENDAR_EXCLUDED_ACTIVITY);
     }
 
     /**
@@ -73,8 +77,12 @@ abstract class CalendarForm
      * @return void
      */
     protected function get_cell_with_activity($calendar, $activity, $currentTime, $day, $oneDayId = null) {
-
         if($this->is_date_in_cyclic_events_range_dates($activity, $this->datesOnThisWeek[$day - 1]) === false) {
+            echo "";
+            return;
+        }
+
+        if($this->is_excluded_day($activity, $this->datesOnThisWeek[$day - 1]) === true) {
             echo "";
             return;
         }
@@ -113,6 +121,63 @@ abstract class CalendarForm
         }
         
         echo "</div>";
+    }
+
+    /**
+     * Check date is in excluded days by global exclusion
+     * 
+     * @param string date
+     * @param string time
+     * @return object|null
+     */
+    protected function is_excluded_day_by_global_exclusion($date, $time) {
+        $timestamp = strtotime($date);
+
+        foreach($this->exclusionData as $element) {
+            $elementTimestamp = strtotime($element->excludedDate);
+            // if($element->excludedStartAt === null && $element->excludedEndAt === null) {
+                // DODAĆ SPRAWDZENIE GODZINY
+            // }
+
+            if($timestamp == $elementTimestamp) {
+                return $element;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check date is in excluded days
+     * 
+     * @param object|null activity
+     * @param string date
+     * @return bool
+     */
+    private function is_excluded_day($activity, $date) {
+        if($activity->exclusionDays === null) {
+            return false;
+        }
+
+        $exclusionDays = explode(";", $activity->exclusionDays);
+        $timestamp = strtotime($date);
+
+        foreach($exclusionDays as $oneDay) {
+            if(str_contains($oneDay, "%")) {
+                $oneDay = str_replace("%", date('Y'), $oneDay);
+            }
+
+            $dateOneDay = strtotime($oneDay);
+
+            if($dateOneDay === false) {
+                continue;
+            }
+
+            if($timestamp == $dateOneDay) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace CalendarPlugin\src\classes\models;
 
 use CalendarPlugin\src\classes\CalendarDB;
+use CalendarPlugin\src\classes\consts\CalendarTypes;
 
 class Model
 {
@@ -22,6 +23,7 @@ class Model
         if($result === null || $result === false) {
             return null;
         }
+
         if(is_array($result)) {
             $toReturn = [];
             foreach($result as $element) {
@@ -31,11 +33,10 @@ class Model
             }
             return $toReturn;
         }
-        else {
-            $object = json_decode($result->calendar_value);
-            unset($result->calendar_value);
-            return (object) ((array)$result + (array)$object);
-        }
+
+        $object = json_decode($result->calendar_value);
+        unset($result->calendar_value);
+        return (object) ((array)$result + (array)$object);
     }
 
     /**

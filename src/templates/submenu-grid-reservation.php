@@ -163,6 +163,14 @@ $formValidator = new FormValidator;
                                             <input type="date" class="form-control" id="activity_day_end_date" name="activity_day_end_date" min="<?= date('Y-m-d'); ?>">
                                             <small class="text-muted w-100 admin-field-text-small"><?= $service->langData['calendar_grid_data_field12_description'] ?></small>
                                         </div>
+
+                                        <hr class="hr2">
+
+                                        <div class="form-group my-plugin-form-group">
+                                            <label for="activity_exclusion_days"><?= $service->langData['calendar_grid_data_field13_name'] ?></label>
+                                            <textarea class="form-control" id="activity_exclusion_days" name="activity_exclusion_days" rows="3"></textarea>
+                                            <small class="text-muted w-100 admin-field-text-small"><?= $service->langData['calendar_grid_data_field13_description'] ?></small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

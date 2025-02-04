@@ -17,6 +17,7 @@ class ActivityModel extends Model
     public $type;
     public $rawType;
     public $slot;
+    public $exclusionDays;
     public $isActive;
 
     /**
@@ -37,6 +38,7 @@ class ActivityModel extends Model
         $this->bgColor = null;
         $this->type = null;
         $this->slot = null;
+        $this->exclusionDays = null;
         $this->isActive = false;
 
         if($data !== null && is_array($data)) {
@@ -85,6 +87,9 @@ class ActivityModel extends Model
                     break;
                 case "activity_slot":
                     $this->slot = $value;
+                    break;
+                case 'activity_exclusion_days':
+                    $this->exclusionDays = $value;
                     break;
                 case "activity_is_active":
                     $this->isActive = $value;
