@@ -107,20 +107,61 @@ abstract class CalendarForm
             echo "<p class='text-wrap'>" . htmlspecialchars($activity->type) . "</p>";
         }
 
+        $this->show_hours_on_grid_calendar($calendar, $activity->startAt, $activity->endAt, false);
+        
+        echo "</div>";
+    }
+
+    /**
+     * Show hours on calendar grid
+     * 
+     * @param object|null calendar
+     * @param string|null startAt
+     * @param string|null endAt
+     * @param bool isExcluded
+     * @return void 
+     */
+    private function show_hours_on_grid_calendar($calendar, $startAt, $endAt, $isExcluded) {
         if($calendar->get_start_time_on_grid() === true && $calendar->get_end_time_on_grid() === true) {
-            echo "<p>" . $this->langService->langData['label_activity_from'] . " " . htmlspecialchars($activity->startAt) . " "
-                . $this->langService->langData['label_activity_to'] . " " . htmlspecialchars($activity->endAt) . "</p>";
+            $labelFrom = $this->langService->langData['label_activity_from'];
+
+            if($isExcluded === true) {
+                $labelFrom = $this->langService->langData['label_excluded_from'];
+            }
+            
+            if($startAt !== null && $endAt !== null) {
+                echo "<p>" . $labelFrom . " " . htmlspecialchars($startAt) . " " . $this->langService->langData['label_activity_to'] .
+                    " " . htmlspecialchars($endAt) . "</p>";
+            }
+
+            if($isExcluded === true && $startAt === null && $endAt === null) {
+                echo "<p>" . $this->langService->langData['label_excluded_all_day_long'] . "</p>";
+            }
         }
 
         if($calendar->get_start_time_on_grid() === true && $calendar->get_end_time_on_grid() === false) {
-            echo "<p>" . $this->langService->langData['label_activity_start_at'] . " " . htmlspecialchars($activity->startAt) . "</p>";
+            $labelFrom = $this->langService->langData['label_activity_start_at'];
+
+            if($isExcluded === true) {
+                $labelFrom = $this->langService->langData['label_excluded_start_at'];
+            }
+
+            if($startAt !== null) {
+                echo "<p>" . $labelFrom . " " . htmlspecialchars($startAt) . "</p>";
+            }
         }
         
         if($calendar->get_start_time_on_grid() === false && $calendar->get_end_time_on_grid() === true) {
-            echo "<p>" . $this->langService->langData['label_activity_end_at'] . " " . htmlspecialchars($activity->endAt) . "</p>";
+            $labelTo = $this->langService->langData['label_activity_end_at'];
+
+            if($isExcluded === true) {
+                $labelTo = $this->langService->langData['label_excluded_end_at'];
+            }
+
+            if($endAt !== null) {
+                echo "<p>" . $labelTo . " " . htmlspecialchars($endAt) . "</p>";
+            }
         }
-        
-        echo "</div>";
     }
 
     /**
@@ -131,19 +172,54 @@ abstract class CalendarForm
      * @return object|null
      */
     protected function is_excluded_day_by_global_exclusion($date, $time) {
-        $timestamp = strtotime($date);
+        $timestampDate = strtotime($date);
+        $timestampTime = strtotime($time);
 
         foreach($this->exclusionData as $element) {
-            $elementTimestamp = strtotime($element->excludedDate);
-            // if($element->excludedStartAt === null && $element->excludedEndAt === null) {
-                // DODAĆ SPRAWDZENIE GODZINY
-            // }
+            if($element->excludedIsActive === false) {
+                continue;
+            }
 
-            if($timestamp == $elementTimestamp) {
-                return $element;
+            $elementDateTimestamp = strtotime($element->excludedDate);
+            $elementStartTimestamp = strtotime($element->excludedStartAt);
+            $elementEndTimestamp = strtotime($element->excludedEndAt);
+
+            if ($element->excludedStartAt === null && $element->excludedEndAt === null) {
+                if ($timestampDate == $elementDateTimestamp) {
+                    return $element;
+                }
+            }
+            elseif ($element->excludedStartAt !== null && $element->excludedEndAt === null) {
+                if ($timestampTime >= $elementStartTimestamp && $timestampDate == $elementDateTimestamp) {
+                    return $element;
+                }
+            }
+            elseif ($element->excludedStartAt === null && $element->excludedEndAt !== null) {
+                if ($timestampTime <= $elementEndTimestamp && $timestampDate == $elementDateTimestamp) {
+                    return $element;
+                }
+            }
+            else {
+                if ($timestampTime >= $elementStartTimestamp && $timestampTime <= $elementEndTimestamp && $timestampDate == $elementDateTimestamp) {
+                    return $element;
+                }
             }
         }
         return null;
+    }
+
+    /**
+     * Get row with excluded data
+     * 
+     * @param object|null calendar
+     * @param object|null excluded
+     * @return void
+     */
+    protected function get_row_with_exclusion_data($calendar, $excluded) {
+        echo "<td style='background-color: " . htmlspecialchars($excluded->excludedBgColor) .
+                ";'><div><p class='text-wrap' style='font-weight: bold;'>" . $excluded->excludedName . "</p>";
+        $this->show_hours_on_grid_calendar($calendar, $excluded->excludedStartAt, $excluded->excludedEndAt, true);
+        echo "</div></td>";
     }
 
     /**
@@ -163,7 +239,7 @@ abstract class CalendarForm
 
         foreach($exclusionDays as $oneDay) {
             if(str_contains($oneDay, "%")) {
-                $oneDay = str_replace("%", date('Y'), $oneDay);
+                $oneDay = str_replace("%", date('Y', $timestamp), $oneDay);
             }
 
             $dateOneDay = strtotime($oneDay);

@@ -172,7 +172,11 @@ $pagination = PaginationService::paginate($excludedActivities);
                             echo "<td style='background-color:" . $activity->excludedBgColor . ";'>" . $activity->id . "</td>";
                             echo "<td>" . $activity->excludedName . "</td>";
 
-                            if($activity->excludedStartAt === null && $activity->excludedEndAt !== null) {
+                            if($activity->excludedStartAt === null && $activity->excludedEndAt === null) {
+                                $excludedTime = $service->langData['excluded_all_day_long'];
+                                echo "<td>" . $excludedTime . "</td><td>" . $excludedTime . "</td>";
+                            }
+                            else if($activity->excludedStartAt === null && $activity->excludedEndAt !== null) {
                                 echo "<td> --:-- </td><td>" . $activity->excludedEndAt . "</td>";
                             }
                             else if($activity->excludedStartAt !== null && $activity->excludedEndAt === null) {
@@ -180,7 +184,7 @@ $pagination = PaginationService::paginate($excludedActivities);
                             }
                             else {
                                 $excludedTime = $service->langData['excluded_all_day_long'];
-                                echo "<td>" . $excludedTime . "</td><td>" . $excludedTime . "</td>";
+                                echo "<td>" . $activity->excludedStartAt . "</td><td>" . $activity->excludedEndAt . "</td>";
                             }
 
                             echo "<td>" . $activity->excludedDate . "</td>";

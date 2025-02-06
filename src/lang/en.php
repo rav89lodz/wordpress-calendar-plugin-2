@@ -97,7 +97,11 @@ return [
     'calendarLabels' => [
         'label_activity_start_at' => 'Activity start time',
         'label_activity_end_at' => 'Activity end time',
+        'label_excluded_start_at' => 'Closed from',
+        'label_excluded_end_at' => 'Closed to',
         'label_activity_from' => 'Activity start from',
+        'label_excluded_from' => 'Closed from',
+        'label_excluded_all_day_long' => 'Closed all day',
         'label_activity_to' => 'to',
         'default_success_message' => 'Message sent. Reservation confirmed',
         'default_error_message' => 'Message sent. Reservation rejected',

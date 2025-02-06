@@ -82,13 +82,26 @@ class FormValidator
      * Validation sequence for time
      * 
      * @param mixed time
-     * @return string|null
+     * @return string
      */
     public function validation_sequence_for_time($time) {
         if($this->is_valid_time($time)) {
             return $this->sanitize_string($time);
         }
         return "00:00";
+    }
+
+    /**
+     * Validation sequence for time
+     * 
+     * @param mixed time
+     * @return string|null
+     */
+    public function validation_sequence_for_time_with_null($time) {
+        if($this->is_valid_time($time)) {
+            return $this->sanitize_string($time);
+        }
+        return null;
     }
 
     /**

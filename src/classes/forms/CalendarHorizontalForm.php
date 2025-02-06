@@ -76,14 +76,13 @@ class CalendarHorizontalForm extends CalendarForm
             $this->print_horizontal_header_row($days[$i], $currentDay, $i + 1);
             echo "</th>";
             foreach($this->hours as $hour) {
-                $activitiesGrouped = $this->group_activities_by_day_and_hour($this->activities, $hour, $currentDay);
-
                 $excluded = $this->is_excluded_day_by_global_exclusion($this->datesOnThisWeek[$i], $hour);
                 if($excluded !== null) {
-                    echo "<td style='background-color: " . htmlspecialchars($excluded->excludedBgColor) . ";'><div>" . $excluded->excludedName . "</div></td>";
+                    $this->get_row_with_exclusion_data($this->calendar, $excluded);
                     continue;
                 }
 
+                $activitiesGrouped = $this->group_activities_by_day_and_hour($this->activities, $hour, $currentDay);
                 $this->print_row_horizontal_with_data($activitiesGrouped, $hour, $i + 1);
             }
             echo "</tr>";

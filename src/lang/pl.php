@@ -97,7 +97,11 @@ return [
     'calendarLabels' => [
         'label_activity_start_at' => 'Godzina rozpoczęcia',
         'label_activity_end_at' => 'Godzina zakończenia',
+        'label_excluded_start_at' => 'Nieczynne od',
+        'label_excluded_end_at' => 'Nieczynne do',
         'label_activity_from' => 'Zajęcia od',
+        'label_excluded_from' => 'Nieczynne od',
+        'label_excluded_all_day_long' => 'Nieczynne cały dzień',
         'label_activity_to' => 'do',
         'default_success_message' => 'Wiadmość została wysłana. Rezerwacja dokonana',
         'default_error_message' => 'Wiadmość została wysłana. Rezerwacja odrzucona',

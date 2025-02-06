@@ -91,7 +91,7 @@ class CalendarVerticalForm extends CalendarForm
         for ($day = 1; $day <= 7; $day++) {
             $excluded = $this->is_excluded_day_by_global_exclusion($this->datesOnThisWeek[$day - 1], $currentTime);
             if($excluded !== null) {
-                echo "<td style='background-color: " . htmlspecialchars($excluded->excludedBgColor) . ";'><div>" . $excluded->excludedName . "</div></td>";
+                $this->get_row_with_exclusion_data($this->calendar, $excluded);
                 continue;
             }
 

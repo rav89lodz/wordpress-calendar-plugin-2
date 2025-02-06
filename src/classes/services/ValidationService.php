@@ -137,9 +137,10 @@ class ValidationService
             case 'time_start_calendar_add_activity':
             case 'time_end_calendar_add_activity':
             case 'calendar_modal_hour':
+                return $this->validator->validation_sequence_for_time($value);
             case 'excluded_activity_start_at':
             case 'excluded_activity_end_at':
-                return $this->validator->validation_sequence_for_time($value);
+                return $this->validator->validation_sequence_for_time_with_null($value);
             case 'activity_date':
             case 'excluded_activity_date':
             case 'calendar_modal_day_name':
