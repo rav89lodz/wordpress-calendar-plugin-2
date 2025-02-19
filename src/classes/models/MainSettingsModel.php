@@ -23,6 +23,10 @@ class MainSettingsModel extends Model
     public $startAt;
     public $endAt;
     public $interval;
+    public $limitOptions;
+    public $removeAfterLimitReached;
+    public $limitReachedColor;
+    public $limitReachedColorValue;
     public $captchaSiteKey;
     public $captchaSecretKey;
 
@@ -51,6 +55,10 @@ class MainSettingsModel extends Model
         $this->startAt = "00:00";
         $this->endAt = "00:00";
         $this->interval = 60;
+        $this->limitOptions = "sended";
+        $this->removeAfterLimitReached = false;
+        $this->limitReachedColor = false;
+        $this->limitReachedColorValue = null;
         $this->captchaSiteKey = null;
         $this->captchaSecretKey = null;
 
@@ -124,6 +132,18 @@ class MainSettingsModel extends Model
                     break;
                 case 'calendar_plugin_interval':
                     $this->interval = $value;
+                    break;
+                case 'calendar_plugin_limit_options':
+                    $this->limitOptions = $value;
+                    break;
+                case 'calendar_plugin_remove_after_limit_reached':
+                    $this->removeAfterLimitReached = $value;
+                    break;
+                case 'calendar_plugin_limit_reached_color':
+                    $this->limitReachedColor = $value;
+                    break;
+                case 'calendar_plugin_limit_reached_color_value':
+                    $this->limitReachedColorValue = $value;
                     break;
                 case 'calendar_plugin_captcha_site_key':
                     $this->captchaSiteKey = $value;

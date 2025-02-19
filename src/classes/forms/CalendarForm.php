@@ -88,12 +88,23 @@ abstract class CalendarForm
         }
 
         $id = $activity->id . "_" . $currentTime . "_" . $day . $oneDayId;
-        $limit = $this->reservationService->check_reservation_limit($activity->id, $this->datesOnThisWeek[$day - 1]);
+        $limit = $this->reservationService->get_reservation_limit($activity->id, $this->datesOnThisWeek[$day - 1]);
+
+        if($limit >= $activity->slot && $calendar->get_remove_after_limit_reached()) {
+            echo "";
+            return;
+        }
 
         $class = $this->set_fulent_background_class($calendar, $activity->bgColor, $activity->id);
 
         if($limit >= $activity->slot || $calendar->get_calendar_reservation() === false) {
-            echo "<div data-info='" . $activity->startAt . "|" . $activity->endAt . "|" . $activity->duration . "' class='calendar-event cursor-default $class' id='$id' style='background-color: " . htmlspecialchars($activity->bgColor) . ";'>";
+            if($calendar->get_limit_reached_color() === true && $calendar->get_limit_reached_color_value() !== null) {
+                $class = $this->set_fulent_background_class($calendar, $calendar->get_limit_reached_color_value(), $activity->id);
+                echo "<div data-info='" . $activity->startAt . "|" . $activity->endAt . "|" . $activity->duration . "' class='calendar-event cursor-default $class' id='$id' style='background-color: " . htmlspecialchars($calendar->get_limit_reached_color_value()) . ";'>";
+            }
+            else {
+                echo "<div data-info='" . $activity->startAt . "|" . $activity->endAt . "|" . $activity->duration . "' class='calendar-event cursor-default $class' id='$id' style='background-color: " . htmlspecialchars($activity->bgColor) . ";'>";
+            }
         }
         else {
             echo "<div data-info='" . $activity->startAt . "|" . $activity->endAt . "|" . $activity->duration . "' class='calendar-event cursor-pointer $class' id='$id' style='background-color: " . htmlspecialchars($activity->bgColor) . ";'>";

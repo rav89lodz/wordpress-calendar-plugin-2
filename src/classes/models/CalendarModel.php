@@ -27,6 +27,9 @@ class CalendarModel extends Model
     private $calendarCellMinHeight;
     private $calendarOneDayView;
     private $currentData;
+    private $removeAfterLimitReached;
+    private $limitReachedColor;
+    private $limitReachedColorValue;
     private $calendarCaptchaSiteKey;
     private $calendarCaptchaSecretKey;
 
@@ -69,8 +72,11 @@ class CalendarModel extends Model
         $this->calendarGridHeight = $this->set_calendar_grid_params('gridHeight');
         $this->calendarCellMinHeight = $this->set_calendar_grid_params('cellMinHeight');
         $this->calendarOneDayView = $this->set_calendar_option('oneDayView');
-        $this->calendarCaptchaSiteKey = $this->set_captcha_details('captchaSiteKey');
-        $this->calendarCaptchaSecretKey = $this->set_captcha_details('captchaSecretKey');
+        $this->removeAfterLimitReached = $this->set_calendar_option('removeAfterLimitReached');
+        $this->limitReachedColor = $this->set_calendar_option('limitReachedColor');
+        $this->limitReachedColorValue = $this->set_calendar_option_details('limitReachedColorValue');
+        $this->calendarCaptchaSiteKey = $this->set_calendar_option_details('captchaSiteKey');
+        $this->calendarCaptchaSecretKey = $this->set_calendar_option_details('captchaSecretKey');
     }
 
     /**
@@ -254,6 +260,33 @@ class CalendarModel extends Model
     }
 
     /**
+     * Get removeAfterLimitReached
+     * 
+     * @return bool
+     */
+    public function get_remove_after_limit_reached() {
+        return $this->removeAfterLimitReached;
+    }
+
+    /**
+     * Get limitReachedColor
+     * 
+     * @return bool
+     */
+    public function get_limit_reached_color() {
+        return $this->limitReachedColor;
+    }
+
+    /**
+     * Get limitReachedColorValue
+     * 
+     * @return string
+     */
+    public function get_limit_reached_color_value() {
+        return $this->limitReachedColorValue;
+    }
+
+    /**
      * Get calendarCaptchaSiteKey
      * 
      * @return string
@@ -305,7 +338,7 @@ class CalendarModel extends Model
     }
     
     /**
-     * Set claendar option by DB data
+     * Set claendar boolean option by DB data
      * 
      * @param string option
      * @return bool
@@ -348,11 +381,11 @@ class CalendarModel extends Model
     }
 
     /**
-     * Set claendar captcha details
+     * Set claendar string option by DB data
      * 
      * @return string
      */
-    private function set_captcha_details($param) {
+    private function set_calendar_option_details($param) {
         if($this->currentData === null || ! isset($this->currentData->$param)) {
             return null;
         }

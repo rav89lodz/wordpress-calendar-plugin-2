@@ -55,6 +55,9 @@ if (! class_exists('CalendarPlugin')) {
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/PaginationService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/PlacesPageService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/ReservationService.php');
+            require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/SearchService.php');
+            require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/SessionService.php');
+            require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/SortService.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/services/ValidationService.php');
 
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/forms/CalendarForm.php');
@@ -74,11 +77,16 @@ if (! class_exists('CalendarPlugin')) {
 
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/consts/CalendarTypes.php');
             require_once(CALENDAR_PLUGIN_PATH . '/src/classes/consts/CalendarStatus.php');
+            require_once(CALENDAR_PLUGIN_PATH . '/src/classes/consts/CalendarSort.php');
         }
     }
 
     $calendarPlugin = new CalendarPlugin;
     $calendarPlugin->initialize();
+
+    if(session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
     add_filter( 'plugin_action_links', function( $actions, $plugin_file ) {
         static $plugin;

@@ -1,5 +1,6 @@
 <?php
 
+use CalendarPlugin\src\classes\consts\CalendarSort;
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\models\ExcludedActivityModel;
 use CalendarPlugin\src\classes\models\PlaceModel;
@@ -7,6 +8,9 @@ use CalendarPlugin\src\classes\services\CalendarService;
 use CalendarPlugin\src\classes\services\LanguageService;
 use CalendarPlugin\src\classes\services\PaginationService;
 use CalendarPlugin\src\classes\services\ExcludedActivityService;
+use CalendarPlugin\src\classes\services\SearchService;
+use CalendarPlugin\src\classes\services\SessionService;
+use CalendarPlugin\src\classes\services\SortService;
 use CalendarPlugin\src\classes\services\ValidationService;
 
 if(isset($_POST['excluded_activity_name'])) {
@@ -15,8 +19,10 @@ if(isset($_POST['excluded_activity_name'])) {
     $eaService = new ExcludedActivityService($data);
 }
 
-$service = new LanguageService(['optionPage', 'adminMenu', 'excludedActivityMenu', 'excludedActivityFriendlyNames']);
+$service = new LanguageService(['optionPage', 'adminMenu', 'excludedActivityMenu', 'excludedActivityFriendlyNames', 'searchBar']);
 $calendarService = new CalendarService();
+
+SessionService::destroySessionSequenceForExcludedForm();
 
 $excludedActivities = new ExcludedActivityModel();
 $excludedActivities = $excludedActivities->all(CalendarTypes::CALENDAR_EXCLUDED_ACTIVITY, true);
@@ -27,6 +33,26 @@ $places = $places->all(CalendarTypes::CALENDAR_PLACE, true);
 $placeData = [];
 foreach($places as $place) {
     $placeData[] = $place->id . ">?>" . $place->name;
+}
+
+if(isset($_POST['excluded_order_vector']) && isset($_POST['excluded_order_by'])) {
+    $_SESSION['excluded_order_vector'] = $_POST['excluded_order_vector'] === CalendarSort::ASC ? CalendarSort::DESC : CalendarSort::ASC;
+    $_SESSION['excluded_order_by'] = $_POST['excluded_order_by'];
+}
+
+if(isset($_SESSION['excluded_order_by']) && isset($_SESSION['excluded_order_vector'])) {
+    $order_vector = $_SESSION['excluded_order_vector'];
+    $excludedActivities = SortService::sortBy($excludedActivities, $_SESSION['excluded_order_by'],  $_SESSION['excluded_order_vector']);
+}
+
+if(isset($_POST['search_bar_input_serach'])) {
+    $_SESSION['search_bar_input_excluded'] = $_POST['search_bar_input_serach'];
+    $_SESSION['search_bar_option_excluded'] = $_POST['search_bar_option_serach'];
+    $_SESSION['search_bar_field_excluded'] = $_POST['search_bar_field_serach'];
+}
+
+if(isset($_SESSION['search_bar_input_excluded']) && isset($_SESSION['search_bar_option_excluded']) && isset($_SESSION['search_bar_field_excluded'])) {
+    $excludedActivities = SearchService::search($excludedActivities, $_SESSION['search_bar_field_excluded'], $_SESSION['search_bar_option_excluded'], $_SESSION['search_bar_input_excluded']);
 }
 
 $pagination = PaginationService::paginate($excludedActivities);
@@ -47,6 +73,32 @@ $pagination = PaginationService::paginate($excludedActivities);
     <input type="hidden" id="get_rest_url" value="<?= get_rest_url( null, 'v1') ?>">
 
     <button type="button" id="calendarFormModalExcludedActivityButton" class="btn btn-primary" data-toggle="modal" data-target="#calendarFormModalExcludedActivity"><?= $service->langData['add_new'] ?></button>
+
+    <div class="my-plugin-search-bar">
+        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-excluded-activity' ?>">
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_field_serach" aria-label="Select field">
+                    <option value="id" selected>Id</option>
+                    <option value="excludedName"><?= $service->langData['excluded_activity_name'] ?></option>
+                    <option value="excludedDate"><?= $service->langData['excluded_activity_date'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_option_serach" aria-label="Select option">
+                    <option selected value="option_serach_1"><?= $service->langData['search_bar_option_serach1'] ?></option>
+                    <option value="option_serach_2"><?= $service->langData['search_bar_option_serach2'] ?></option>
+                    <option value="option_serach_3"><?= $service->langData['search_bar_option_serach3'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <input class="form-control my-plugin-search-bar-input" name="search_bar_input_serach" required type="search" placeholder="<?= $service->langData['search'] ?>" aria-label="Search">
+            </div>
+            <div style="float: left;">
+                <button class="btn btn-primary btn-search my-plugin-search-bar-button" type="submit"><?= $service->langData['search_btn'] ?></button>
+            </div>
+            <div style="clear: both;"></div>
+        </form>
+    </div>
 
     <div class="d-flex justify-content-center">
         <div class="modal fade" id="calendarFormModalExcludedActivity" tabindex="-1" role="dialog" aria-labelledby="calendarFormModalExcludedActivity" aria-hidden="true">
@@ -154,12 +206,36 @@ $pagination = PaginationService::paginate($excludedActivities);
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col"><?= $service->langData['excluded_activity_name'] ?></th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-excluded-activity' ?>">
+                            <input type="hidden" name="excluded_order_by" value="id">
+                            <input type="hidden" name="excluded_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;">Id</a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-excluded-activity' ?>">
+                            <input type="hidden" name="excluded_order_by" value="excludedName">
+                            <input type="hidden" name="excluded_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['excluded_activity_name'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-excluded-activity' ?>">
+                            <input type="hidden" name="excluded_order_by" value="excludedDate">
+                            <input type="hidden" name="excluded_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['excluded_activity_date'] ?></a>
+                        </form>
+                    </th>
                     <th scope="col"><?= $service->langData['excluded_activity_time_start'] ?></th>
                     <th scope="col"><?= $service->langData['excluded_activity_time_end'] ?></th>
-                    <th scope="col"><?= $service->langData['excluded_activity_date'] ?></th>
-                    <th scope="col"><?= $service->langData['excluded_activity_is_active'] ?></th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-excluded-activity' ?>">
+                            <input type="hidden" name="excluded_order_by" value="excludedIsActive">
+                            <input type="hidden" name="excluded_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['excluded_activity_is_active'] ?></a>
+                        </form>
+                    </th>
                     <th scope="col"><?= $service->langData['edit_label'] ?></th>
                     <th scope="col"><?= $service->langData['delete_label'] ?></th>
                 </tr>
@@ -171,6 +247,7 @@ $pagination = PaginationService::paginate($excludedActivities);
                             echo "<tr>";
                             echo "<td style='background-color:" . $activity->excludedBgColor . ";'>" . $activity->id . "</td>";
                             echo "<td>" . $activity->excludedName . "</td>";
+                            echo "<td>" . $activity->excludedDate . "</td>";
 
                             if($activity->excludedStartAt === null && $activity->excludedEndAt === null) {
                                 $excludedTime = $service->langData['excluded_all_day_long'];
@@ -186,8 +263,7 @@ $pagination = PaginationService::paginate($excludedActivities);
                                 $excludedTime = $service->langData['excluded_all_day_long'];
                                 echo "<td>" . $activity->excludedStartAt . "</td><td>" . $activity->excludedEndAt . "</td>";
                             }
-
-                            echo "<td>" . $activity->excludedDate . "</td>";
+                           
                             $checked = $activity->excludedIsActive === true ? "checked" : "";
                             $isActive = $activity->excludedIsActive === true ? "1" : "0";
                             echo "<td><input type='checkbox' class='calendar-excluded-activity-is-active' data-target='" . $activity->id . "' " . $checked . "></td>";

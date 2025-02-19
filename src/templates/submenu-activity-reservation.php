@@ -1,11 +1,15 @@
 <?php
 
+use CalendarPlugin\src\classes\consts\CalendarSort;
 use CalendarPlugin\src\classes\consts\CalendarStatus;
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\models\ReservationModel;
 use CalendarPlugin\src\classes\services\LanguageService;
 use CalendarPlugin\src\classes\services\PaginationService;
 use CalendarPlugin\src\classes\services\ReservationService;
+use CalendarPlugin\src\classes\services\SearchService;
+use CalendarPlugin\src\classes\services\SessionService;
+use CalendarPlugin\src\classes\services\SortService;
 use CalendarPlugin\src\classes\services\ValidationService;
 
 if(isset($_POST['users_reservation_description'])) {
@@ -14,9 +18,32 @@ if(isset($_POST['users_reservation_description'])) {
     $rService = new ReservationService($data);
 }
 
-$service = new LanguageService(['optionPage', 'adminMenu', 'reservationMenu', 'reservationFriendlyNames']);
+$service = new LanguageService(['optionPage', 'adminMenu', 'reservationMenu', 'reservationFriendlyNames', 'searchBar']);
 $reservation = new ReservationModel();
 $reservation = $reservation->all(CalendarTypes::CALENDAR_NEW_RESERVATION, true);
+
+SessionService::destroySessionSequenceForActivityReservation();
+
+if(isset($_POST['activity_reservation_order_vector']) && isset($_POST['activity_reservation_order_by'])) {
+    $_SESSION['activity_reservation_order_vector'] = $_POST['activity_reservation_order_vector'] === CalendarSort::ASC ? CalendarSort::DESC : CalendarSort::ASC;
+    $_SESSION['activity_reservation_order_by'] = $_POST['activity_reservation_order_by'];
+}
+
+if(isset($_SESSION['activity_reservation_order_by']) && isset($_SESSION['activity_reservation_order_vector'])) {
+    $order_vector = $_SESSION['activity_reservation_order_vector'];
+    $reservation = SortService::sortBy($reservation, $_SESSION['activity_reservation_order_by'],  $_SESSION['activity_reservation_order_vector']);
+}
+
+if(isset($_POST['search_bar_input_serach'])) {
+    $_SESSION['search_bar_input_activity_reservation'] = $_POST['search_bar_input_serach'];
+    $_SESSION['search_bar_option_activity_reservation'] = $_POST['search_bar_option_serach'];
+    $_SESSION['search_bar_field_activity_reservation'] = $_POST['search_bar_field_serach'];
+}
+
+if(isset($_SESSION['search_bar_input_activity_reservation']) && isset($_SESSION['search_bar_option_activity_reservation']) && isset($_SESSION['search_bar_field_activity_reservation'])) {
+    $reservation = SearchService::search($reservation, $_SESSION['search_bar_field_activity_reservation'], $_SESSION['search_bar_option_activity_reservation'], $_SESSION['search_bar_input_activity_reservation']);
+}
+
 $pagination = PaginationService::paginate($reservation);
 
 ?>
@@ -31,6 +58,35 @@ $pagination = PaginationService::paginate($reservation);
     <div>
         <h2><?= $service->langData['reservation_menu_description'] ?></h2>
     </div>
+
+    <div class="my-plugin-search-bar">
+        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-activity-reservation' ?>">
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_field_serach" aria-label="Select field">
+                    <option value="id" selected>Id</option>
+                    <option value="userName"><?= $service->langData['user_name'] ?></option>
+                    <option value="userEmail"><?= $service->langData['user_email'] ?></option>
+                    <option value="reservationDate"><?= $service->langData['reservation_date'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_option_serach" aria-label="Select option">
+                    <option selected value="option_serach_1"><?= $service->langData['search_bar_option_serach1'] ?></option>
+                    <option value="option_serach_2"><?= $service->langData['search_bar_option_serach2'] ?></option>
+                    <option value="option_serach_3"><?= $service->langData['search_bar_option_serach3'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <input class="form-control my-plugin-search-bar-input" name="search_bar_input_serach" required type="search" placeholder="<?= $service->langData['search'] ?>" aria-label="Search">
+            </div>
+            <div style="float: left;">
+                <button class="btn btn-primary btn-search my-plugin-search-bar-button" type="submit"><?= $service->langData['search_btn'] ?></button>
+            </div>
+            <div style="clear: both;"></div>
+        </form>
+    </div>
+
+    <div class="m-5"></div>
 
     <div class="d-flex justify-content-center">
         <div class="modal fade" id="calendarFormModalUpdateUsersReservation" tabindex="-1" role="dialog" aria-labelledby="calendarFormModalUpdateUsersReservation" aria-hidden="true">
@@ -94,12 +150,36 @@ $pagination = PaginationService::paginate($reservation);
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col"><?= $service->langData['user_name'] ?></th>
-                    <th scope="col"><?= $service->langData['user_email'] ?></th>
-                    <th scope="col"><?= $service->langData['activity_name'] ?></th>
-                    <th scope="col"><?= $service->langData['reservation_date'] ?></th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-activity-reservation' ?>">
+                            <input type="hidden" name="activity_reservation_order_by" value="id">
+                            <input type="hidden" name="activity_reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;">Id</a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-activity-reservation' ?>">
+                            <input type="hidden" name="activity_reservation_order_by" value="userName">
+                            <input type="hidden" name="activity_reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['user_name'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-activity-reservation' ?>">
+                            <input type="hidden" name="activity_reservation_order_by" value="userEmail">
+                            <input type="hidden" name="activity_reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['user_email'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-activity-reservation' ?>">
+                            <input type="hidden" name="activity_reservation_order_by" value="reservationDate">
+                            <input type="hidden" name="activity_reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['reservation_date'] ?></a>
+                        </form>
+                    </th>
                     <th scope="col"><?= $service->langData['reservation_time'] ?></th>
+                    <th scope="col"><?= $service->langData['activity_name'] ?></th>
                     <th scope="col"><?= $service->langData['change_status_label'] ?></th>
                     <th scope="col"><?= $service->langData['delete_label'] ?></th>
                 </tr>
@@ -119,15 +199,16 @@ $pagination = PaginationService::paginate($reservation);
                             echo "<td>" . $user->userName . "</td>";
                             echo "<td class='my-copy-short-code'><span style='padding-right: 10px;'>" . $user->userEmail . "</span><i class='fa-regular fa-copy'></i></td>";
 
+                            echo "<td>" . $user->reservationDate . "</td>";
+                            echo "<td>" . $user->reservationTime . "</td>";
+
                             if(isset($activity->name)) {
                                 echo "<td>" . $activity->name . "</td>";
                             }
                             else {
                                 echo "<td>---</td>";
                             }
-
-                            echo "<td>" . $user->reservationDate . "</td>";
-                            echo "<td>" . $user->reservationTime . "</td>";
+                            
                             $dataTarget = implode('|>|', [$user->id, $user->userName, $user->userEmail, $user->reservationStatus]);
                             echo '<td><button class="btn btn-sm btn-info btn-user-reservation-update-action" data-target="' .  $dataTarget .'" type="button">' . $service->langData['change_status'] . '</button></td>';
                             echo '<td><button class="btn btn-sm btn-danger btn-user-reservation-delete-action" type="button" data-target="' . $dataTarget  . '">' . $service->langData['delete'] . '</button></td>';

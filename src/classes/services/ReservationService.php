@@ -4,6 +4,7 @@ namespace CalendarPlugin\src\classes\services;
 
 use CalendarPlugin\src\classes\consts\CalendarStatus;
 use CalendarPlugin\src\classes\consts\CalendarTypes;
+use CalendarPlugin\src\classes\models\MainSettingsModel;
 use CalendarPlugin\src\classes\models\ReservationModel;
 use CalendarPlugin\src\classes\Utils;
 
@@ -61,20 +62,35 @@ class ReservationService
     }
 
     /**
-     * Check reservation limit by data
+     * Get reservation limit by data
      * 
      * @param string activityId
      * @param string date
      * @return int
      */
-    public function check_reservation_limit($activityId, $date) {                                                    
+    public function get_reservation_limit($activityId, $date) {                                                    
         $data = $this->model->all(CalendarTypes::CALENDAR_NEW_RESERVATION);
         $currentlimit = 0;
-        foreach($data as $element) {
-            if($element->activity !== null && $element->activity->id == $activityId && $element->reservationDate == $date) {
-                $currentlimit ++;
+
+        $settings = new MainSettingsModel();
+        $settings = $settings->get(CalendarTypes::CALENDAR_OPTION);
+
+        if($settings->limitOptions !== null && $settings->limitOptions === "sended") {
+            foreach($data as $element) {
+                if($element->activity !== null && $element->activity->id == $activityId && $element->reservationDate == $date) {
+                    $currentlimit ++;
+                }
             }
         }
+
+        if($settings->limitOptions !== null && $settings->limitOptions === "accepted") {
+            foreach($data as $element) {
+                if($element->activity !== null && $element->activity->id == $activityId && $element->reservationDate == $date && $element->reservationStatus === CalendarStatus::CALENDAR_STATUS_ACCEPTED) {
+                    $currentlimit ++;
+                }
+            }
+        }
+        
         return $currentlimit;
     }
 
@@ -88,7 +104,7 @@ class ReservationService
 
         $activity = $this->model->activity;
 
-        $limit = $this->check_reservation_limit($activity->id, $this->model->reservationDate);
+        $limit = $this->get_reservation_limit($activity->id, $this->model->reservationDate);
         if($limit >= $activity->slot || $this->model->userName === null || $this->model->userEmail === null) {
             $message .= "<div><strong style='color:red'>" . $this->service->langData['message_beginning_failure'] .
                         "</strong></div><br><div><strong>" . $this->service->langData['user_email'] . "</strong>: " . $this->model->userEmail .

@@ -87,6 +87,8 @@ class ValidationService
             case 'activity_cyclic':
             case 'activity_is_active':
             case 'excluded_activity_is_active':
+            case 'calendar_plugin_remove_after_limit_reached':
+            case 'calendar_plugin_limit_reached_color':
                 return $this->validator->validation_sequence_for_checkbox($value);
             case 'calendar_plugin_cell_min_height':
             case 'calendar_plugin_grid_width':
@@ -125,6 +127,7 @@ class ValidationService
             case 'calendar_plugin_captcha_secret_key':
             case 'calendar_plugin_captcha_site_key':
             case 'activity_exclusion_days':
+            case 'calendar_plugin_limit_options':
                 return $this->validator->validation_sequence_for_text($value);
             case 'calendar_plugin_start_at':
             case 'calendar_plugin_end_at':
@@ -149,6 +152,7 @@ class ValidationService
                 return $this->validator->validation_sequence_for_date($value);
             case 'activity_bg_color':
             case 'excluded_activity_bg_color':
+            case 'calendar_plugin_limit_reached_color_value':
                 if($this->validator->is_valid_hex_color($value)) {
                     return $value;
                 }

@@ -74,3 +74,18 @@
 .my-plugin-form-group {
     margin-bottom: 3px;
 }
+
+.my-plugin-search-bar {
+    position: absolute;
+    right: 150px;
+    top: 50px;
+}
+
+.my-plugin-search-bar-input {
+    line-height: 32px !important;
+}
+
+.my-plugin-search-bar-button {
+    line-height: 20px !important;
+    margin-left: 6px;
+}

@@ -1,5 +1,6 @@
 <?php
 
+use CalendarPlugin\src\classes\consts\CalendarSort;
 use CalendarPlugin\src\classes\consts\CalendarStatus;
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\FormValidator;
@@ -7,6 +8,9 @@ use CalendarPlugin\src\classes\models\AddGridActivityModel;
 use CalendarPlugin\src\classes\services\LanguageService;
 use CalendarPlugin\src\classes\services\PaginationService;
 use CalendarPlugin\src\classes\services\AddGridActivityService;
+use CalendarPlugin\src\classes\services\SearchService;
+use CalendarPlugin\src\classes\services\SessionService;
+use CalendarPlugin\src\classes\services\SortService;
 use CalendarPlugin\src\classes\services\ValidationService;
 
 if(isset($_POST['new_grid_activity_description'])) {
@@ -15,12 +19,34 @@ if(isset($_POST['new_grid_activity_description'])) {
     $agaService = new AddGridActivityService($data);
 }
 
-$service = new LanguageService(['optionPage', 'adminMenu', 'addActivityMenu', 'addActivityFriendlyNames', 'days']);
+$service = new LanguageService(['optionPage', 'adminMenu', 'addActivityMenu', 'addActivityFriendlyNames', 'days', 'searchBar']);
 
 $gridActivities = new AddGridActivityModel();
 $places = $gridActivities->all(CalendarTypes::CALENDAR_PLACE, true);
 
+SessionService::destroySessionSequenceForGridReservation();
+
 $gridActivities = $gridActivities->all(CalendarTypes::CALENDAR_ADD_GRID_ACTIVITY, true);
+
+if(isset($_POST['reservation_order_vector']) && isset($_POST['reservation_order_by'])) {
+    $_SESSION['reservation_order_vector'] = $_POST['reservation_order_vector'] === CalendarSort::ASC ? CalendarSort::DESC : CalendarSort::ASC;
+    $_SESSION['reservation_order_by'] = $_POST['reservation_order_by'];
+}
+
+if(isset($_SESSION['reservation_order_by']) && isset($_SESSION['reservation_order_vector'])) {
+    $order_vector = $_SESSION['reservation_order_vector'];
+    $gridActivities = SortService::sortBy($gridActivities, $_SESSION['reservation_order_by'],  $_SESSION['reservation_order_vector']);
+}
+
+if(isset($_POST['search_bar_input_serach'])) {
+    $_SESSION['search_bar_input_reservation'] = $_POST['search_bar_input_serach'];
+    $_SESSION['search_bar_option_reservation'] = $_POST['search_bar_option_serach'];
+    $_SESSION['search_bar_field_reservation'] = $_POST['search_bar_field_serach'];
+}
+
+if(isset($_SESSION['search_bar_input_reservation']) && isset($_SESSION['search_bar_option_reservation']) && isset($_SESSION['search_bar_field_reservation'])) {
+    $gridActivities = SearchService::search($gridActivities, $_SESSION['search_bar_field_reservation'], $_SESSION['search_bar_option_reservation'], $_SESSION['search_bar_input_reservation']);
+}
 
 $pagination = PaginationService::paginate($gridActivities);
 
@@ -38,6 +64,36 @@ $formValidator = new FormValidator;
     <div>
         <h2><?= $service->langData['activity_menu_description'] ?></h2>
     </div>
+
+    <div class="my-plugin-search-bar">
+        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid-reservation' ?>">
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_field_serach" aria-label="Select field">
+                    <option value="id" selected>Id</option>
+                    <option value="activityName"><?= $service->langData['add_activity_name'] ?></option>
+                    <option value="activityUserName"><?= $service->langData['add_activity_user_name'] ?></option>
+                    <option value="activityUserEmail"><?= $service->langData['add_activity_user_email'] ?></option>
+                    <option value="activityUserPhone"><?= $service->langData['add_activity_user_phone'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_option_serach" aria-label="Select option">
+                    <option selected value="option_serach_1"><?= $service->langData['search_bar_option_serach1'] ?></option>
+                    <option value="option_serach_2"><?= $service->langData['search_bar_option_serach2'] ?></option>
+                    <option value="option_serach_3"><?= $service->langData['search_bar_option_serach3'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <input class="form-control my-plugin-search-bar-input" name="search_bar_input_serach" required type="search" placeholder="<?= $service->langData['search'] ?>" aria-label="Search">
+            </div>
+            <div style="float: left;">
+                <button class="btn btn-primary btn-search my-plugin-search-bar-button" type="submit"><?= $service->langData['search_btn'] ?></button>
+            </div>
+            <div style="clear: both;"></div>
+        </form>
+    </div>
+
+    <div class="m-5"></div>
 
     <div class="d-flex justify-content-center">
         <div class="modal fade" id="calendarFormModalAddGridActivity" tabindex="-1" role="dialog" aria-labelledby="calendarFormModalAddGridActivity" aria-hidden="true">
@@ -217,11 +273,41 @@ $formValidator = new FormValidator;
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col"><?= $service->langData['add_activity_name'] ?></th>
-                    <th scope="col"><?= $service->langData['add_activity_user_name'] ?></th>
-                    <th scope="col"><?= $service->langData['add_activity_user_email'] ?></th>
-                    <th scope="col"><?= $service->langData['add_activity_user_phone'] ?></th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid-reservation' ?>">
+                            <input type="hidden" name="reservation_order_by" value="id">
+                            <input type="hidden" name="reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;">Id</a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid-reservation' ?>">
+                            <input type="hidden" name="reservation_order_by" value="activityName">
+                            <input type="hidden" name="reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['add_activity_name'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid-reservation' ?>">
+                            <input type="hidden" name="reservation_order_by" value="activityUserName">
+                            <input type="hidden" name="reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['add_activity_user_name'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid-reservation' ?>">
+                            <input type="hidden" name="reservation_order_by" value="activityUserEmail">
+                            <input type="hidden" name="reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['add_activity_user_email'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid-reservation' ?>">
+                            <input type="hidden" name="reservation_order_by" value="activityUserPhone">
+                            <input type="hidden" name="reservation_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['add_activity_user_phone'] ?></a>
+                        </form>
+                    </th>
                     <th scope="col"><?= $service->langData['add_activity_time_start'] ?></th>
                     <th scope="col"><?= $service->langData['add_activity_time_end'] ?></th>
                     <th scope="col"><?= $service->langData['grid_activity_days'] ?></th>

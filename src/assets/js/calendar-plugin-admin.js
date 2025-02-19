@@ -405,6 +405,56 @@ function calendar_admin_menu_setup() {
         });
     }
 
+    let calendar_plugin_remove_after_limit_reached = document.querySelector('#calendar_plugin_remove_after_limit_reached');
+    if(calendar_plugin_remove_after_limit_reached) {
+        let calendar_plugin_limit_reached_color_div = document.querySelector('#calendar_plugin_limit_reached_color_div');
+        let calendar_plugin_limit_reached_color_hr = document.querySelector('#calendar_plugin_limit_reached_color_hr');
+        let calendar_plugin_limit_reached_color = document.querySelector('#calendar_plugin_limit_reached_color');
+        let calendar_plugin_limit_reached_color_value_div = document.querySelector('#calendar_plugin_limit_reached_color_value_div');
+        let calendar_plugin_limit_reached_color_value_hr = document.querySelector('#calendar_plugin_limit_reached_color_value_hr');
+        let calendar_plugin_limit_reached_color_value = document.querySelector('#calendar_plugin_limit_reached_color_value');
+
+        if(calendar_plugin_remove_after_limit_reached.checked == true) {
+            calendar_plugin_limit_reached_color_div.classList.add('d-none');
+            calendar_plugin_limit_reached_color_hr.classList.add('d-none');
+            calendar_plugin_limit_reached_color.checked = false;
+            calendar_plugin_limit_reached_color_value_div.classList.add('d-none');
+            calendar_plugin_limit_reached_color_value_hr.classList.add('d-none');
+            calendar_plugin_limit_reached_color_value.value = "#ff0000";
+        }
+
+        calendar_plugin_remove_after_limit_reached.addEventListener('change', () => {
+            if(calendar_plugin_remove_after_limit_reached.checked == true) {
+                calendar_plugin_limit_reached_color_div.classList.add('d-none');
+                calendar_plugin_limit_reached_color_hr.classList.add('d-none');
+                calendar_plugin_limit_reached_color.checked = false;
+                calendar_plugin_limit_reached_color_value_div.classList.add('d-none');
+                calendar_plugin_limit_reached_color_value_hr.classList.add('d-none');
+                calendar_plugin_limit_reached_color_value.value = "#ff0000";
+            } else {
+                calendar_plugin_limit_reached_color_div.classList.remove('d-none');
+                calendar_plugin_limit_reached_color_hr.classList.remove('d-none');
+            }
+        });
+
+        if(calendar_plugin_limit_reached_color.checked === false) {
+            calendar_plugin_limit_reached_color_value_div.classList.add('d-none');
+            calendar_plugin_limit_reached_color_value_hr.classList.add('d-none');
+            calendar_plugin_limit_reached_color_value.value = "#ff0000";
+        }
+
+        calendar_plugin_limit_reached_color.addEventListener('change', () => {
+            if(calendar_plugin_limit_reached_color.checked === false) {
+                calendar_plugin_limit_reached_color_value_div.classList.add('d-none');
+                calendar_plugin_limit_reached_color_value_hr.classList.add('d-none');
+                calendar_plugin_limit_reached_color_value.value = "#ff0000";
+            } else {
+                calendar_plugin_limit_reached_color_value_div.classList.remove('d-none');
+                calendar_plugin_limit_reached_color_value_hr.classList.remove('d-none');
+            }
+        });
+    }
+
     let button_place = document.querySelector('#calendarFormModalAddPlaceButton');
     if(button_place) {
         button_place.addEventListener('click', () => {

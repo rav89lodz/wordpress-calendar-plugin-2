@@ -20,6 +20,14 @@ return [
         'reservation_id' => 'Unikalny numer zajęć',
     ],
 
+    'searchBar' => [
+        'search' => 'Szukaj...',
+        'search_btn' => 'Szukaj',
+        'search_bar_option_serach1' => 'Zawiera',
+        'search_bar_option_serach2' => 'Zaczyna się od',
+        'search_bar_option_serach3' => 'Równa się',
+    ],
+
     'adminMenu' => [
         'save' => 'Zapisz',
         'form_send' => 'Wyślij',
@@ -200,6 +208,13 @@ return [
         'main_menu_field21_description' => 'Jeśli chcesz używać recaptcha v3 dodaj klucz witryny',
         'main_menu_field22_name' => 'Dodaj tajny klucz recaptcha',
         'main_menu_field22_description' => 'Jeśli chcesz używać recaptcha v3 dodaj tajny klucz',
+        'main_menu_field23_name' => 'W jaki sposób obliczać limit miejsc na zajęcia',
+        'main_menu_field24_name' => 'Usunąć kafelek po osiągnięciu limitu',
+        'main_menu_field24_description' => 'Zaznacz, jeśli chcesz, aby kafelek w kalendarzu został usunięty po osiągnięciu limitu zapisów na zajęcia',
+        'main_menu_field25_name' => 'Ustaw kolor kafelka po osiągnięciu limitu',
+        'main_menu_field25_description' => 'Zaznacz, jeśli chcesz, ustawić kolor dla kafelka po osiągnięciu limitu zapisów na zajęcia',
+        'main_menu_field26_name' => 'Wybierz kolor kafelka po osiągnięciu limitu',
+        'main_menu_field26_description' => 'Wybierz kolor, którym chcesz wyróżnić kafelek w kalendarzu, po osiągnięciu limitu zapisów na zajęcia',
         'main_menu_textarea_field_placeholder' => 'Wpisz treść wiadomości',
         'short_code_activity_place' => 'Użyj tego kodu [short_code], żeby wyświetlić na stronie kalendarz z danymi dla wybranego miejsca',
         'activity_place_title' => 'Miejsca zajęć',
@@ -239,5 +254,7 @@ return [
         'calendar_grid_data_field18_name' => 'Data wykluczenia',
         'calendar_grid_data_field19_name' => 'Wybierz typ zajęć z kalendarza',
         'calendar_grid_data_field19_description' => 'Wybierz typ zajęć, które chcesz oznaczyć jako dzień niedostępny',
+        'limit_option1' => 'Po zgłoszeniach wysłanych',
+        'limit_option2' => 'Po zgłoszeniach zaakceptowanych',
     ],
 ];

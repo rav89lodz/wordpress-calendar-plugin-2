@@ -3,11 +3,14 @@
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\models\MainSettingsModel;
 use CalendarPlugin\src\classes\services\LanguageService;
+use CalendarPlugin\src\classes\services\SessionService;
 
 $service = new LanguageService(['optionPage', 'adminMenu']);
 
 $model = new MainSettingsModel();
 $model = $model->get(CalendarTypes::CALENDAR_OPTION);
+
+SessionService::destroyAllCalendarPluginSession();
 
 ?>
 <style>
@@ -276,6 +279,55 @@ $model = $model->get(CalendarTypes::CALENDAR_OPTION);
                     </div>
 
                     <hr class="hr2">
+
+                    <div class="form-group">
+                        <label for="calendar_plugin_limit_options"><?= $service->langData['main_menu_field23_name'] ?></label>
+                        <select class="form-control" id="calendar_plugin_limit_options" name="calendar_plugin_limit_options" required>
+                            <?php
+                                if($model !== null && isset($model->limitOptions) && $model->limitOptions == "accepted") {
+                                    echo '<option value="sended">' . $service->langData['limit_option1'] . '</option><option value="accepted" selected>' . $service->langData['limit_option2'] . '</option>';
+                                }
+                                else {
+                                    echo '<option value="sended" selected>' . $service->langData['limit_option1'] . '</option><option value="accepted">' . $service->langData['limit_option2'] . '</option>';
+                                }
+                            ?>
+                        </select>
+                    </div>
+
+                    <hr class="hr2">
+
+                    <div class="form-check admin-field-mb">
+                        <div class="admin-check-input">
+                            <input class="form-check-input admin-field-checkbox" type="checkbox" value="1" id="calendar_plugin_remove_after_limit_reached"
+                                name="calendar_plugin_remove_after_limit_reached" <?= $model !== null && isset($model->removeAfterLimitReached) && boolval($model->removeAfterLimitReached) === true ? 'checked': '' ?>>
+                            <input type='hidden' value='0' name='calendar_plugin_remove_after_limit_reached'>
+                            <label class="form-check-label" for="calendar_plugin_remove_after_limit_reached"><?= $service->langData['main_menu_field24_name'] ?></label>
+                        </div>
+                        <small class="text-muted w-100 admin-field-text-small"><?= $service->langData['main_menu_field24_description'] ?></small>
+                    </div>
+
+                    <hr class="hr2">
+
+                    <div class="form-check admin-field-mb" id="calendar_plugin_limit_reached_color_div">
+                        <div class="admin-check-input">
+                            <input class="form-check-input admin-field-checkbox" type="checkbox" value="1" id="calendar_plugin_limit_reached_color"
+                                name="calendar_plugin_limit_reached_color" <?= $model !== null && isset($model->limitReachedColor) && boolval($model->limitReachedColor) === true ? 'checked': '' ?>>
+                            <input type='hidden' value='0' name='calendar_plugin_limit_reached_color'>
+                            <label class="form-check-label" for="calendar_plugin_limit_reached_color"><?= $service->langData['main_menu_field25_name'] ?></label>
+                        </div>
+                        <small class="text-muted w-100 admin-field-text-small"><?= $service->langData['main_menu_field25_description'] ?></small>
+                    </div>
+
+                    <hr class="hr2" id="calendar_plugin_limit_reached_color_hr">
+
+                    <div class="form-group my-plugin-form-group" id="calendar_plugin_limit_reached_color_value_div">
+                        <label for="calendar_plugin_limit_reached_color_value"><?= $service->langData['main_menu_field26_name'] ?></label>
+                        <input type="color" class="form-control" id="calendar_plugin_limit_reached_color_value" name="calendar_plugin_limit_reached_color_value"
+                            value="<?= $model !== null && $model->limitReachedColorValue !== null ? $model->limitReachedColorValue : ' #ff0000' ?>" style="width: 300px">
+                        <small class="text-muted w-100 admin-field-text-small"><?= $service->langData['main_menu_field26_description'] ?></small>
+                    </div>
+
+                    <hr class="hr2" id="calendar_plugin_limit_reached_color_value_hr">
 
                     <div class="form-group">
                         <label for="calendar_plugin_captcha_site_key"><?= $service->langData['main_menu_field21_name'] ?></label>

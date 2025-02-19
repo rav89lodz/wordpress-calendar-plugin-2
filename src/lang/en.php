@@ -20,6 +20,14 @@ return [
         'reservation_id' => 'Unique activity ID',
     ],
 
+    'searchBar' => [
+        'search' => 'Search...',
+        'search_btn' => 'Search',
+        'search_bar_option_serach1' => 'Contains',
+        'search_bar_option_serach2' => 'Starts with',
+        'search_bar_option_serach3' => 'Equals',
+    ],
+
     'adminMenu' => [
         'save' => 'Save',
         'form_send' => 'Send',
@@ -200,6 +208,13 @@ return [
         'main_menu_field21_description' => 'If you want to use recaptcha v3 add your site key',
         'main_menu_field22_name' => 'Add secret recaptcha key',
         'main_menu_field22_description' => 'If you want to use recaptcha v3 add secret key',
+        'main_menu_field23_name' => 'How to calculate the limit of places for classes',
+        'main_menu_field24_name' => 'Remove tile when limit is reached',
+        'main_menu_field24_description' => 'Check if you want the calendar tile to be removed once the class registration limit is reached',
+        'main_menu_field25_name' => 'Set tile color when limit is reached',
+        'main_menu_field25_description' => 'Check if you want to set a color for the tile when the class enrollment limit is reached',
+        'main_menu_field26_name' => 'Select tile color when limit is reached',
+        'main_menu_field26_description' => 'Select the color you want to highlight the tile in the calendar when the class registration limit is reached',
         'main_menu_textarea_field_placeholder' => 'Enter the message content',
         'short_code_activity_place' => 'Use this code [short_code] to display a calendar with data for the selected location on the page',
         'activity_place_title' => 'Activity locations',
@@ -238,5 +253,7 @@ return [
         'calendar_grid_data_field18_name' => 'Date of exclusion',
         'calendar_grid_data_field19_name' => 'Select a class type from the calendar',
         'calendar_grid_data_field19_description' => 'Select the type of class you want to mark as unavailable day',
+        'limit_option1' => 'After applications have been sent',
+        'limit_option2' => 'After applications are accepted',
     ],
 ];

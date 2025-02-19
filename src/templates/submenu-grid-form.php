@@ -1,11 +1,15 @@
 <?php
 
+use CalendarPlugin\src\classes\consts\CalendarSort;
 use CalendarPlugin\src\classes\consts\CalendarTypes;
 use CalendarPlugin\src\classes\models\ActivityModel;
 use CalendarPlugin\src\classes\models\PlaceModel;
 use CalendarPlugin\src\classes\services\LanguageService;
 use CalendarPlugin\src\classes\services\PaginationService;
 use CalendarPlugin\src\classes\services\GridPageService;
+use CalendarPlugin\src\classes\services\SearchService;
+use CalendarPlugin\src\classes\services\SessionService;
+use CalendarPlugin\src\classes\services\SortService;
 use CalendarPlugin\src\classes\services\ValidationService;
 
 if(isset($_POST['activity_name'])) {
@@ -14,12 +18,36 @@ if(isset($_POST['activity_name'])) {
     $ppService = new GridPageService($data);
 }
 
-$service = new LanguageService(['optionPage', 'adminMenu', 'days', 'addActivityFriendlyNames']);
+$service = new LanguageService(['optionPage', 'adminMenu', 'days', 'addActivityFriendlyNames', 'searchBar']);
 $places = new PlaceModel();
 $places = $places->all(CalendarTypes::CALENDAR_PLACE, true);
 
 $activities = new ActivityModel();
 $activities = $activities->all(CalendarTypes::CALENDAR_DATA, true);
+
+SessionService::destroySessionSequenceForCalendarGridForm();
+
+$order_vector = CalendarSort::ASC;
+
+if(isset($_POST['activity_order_vector']) && isset($_POST['activity_order_by'])) {
+    $_SESSION['activity_order_vector'] = $_POST['activity_order_vector'] === CalendarSort::ASC ? CalendarSort::DESC : CalendarSort::ASC;
+    $_SESSION['activity_order_by'] = $_POST['activity_order_by'];
+}
+
+if(isset($_SESSION['activity_order_by']) && isset($_SESSION['activity_order_vector'])) {
+    $order_vector = $_SESSION['activity_order_vector'];
+    $activities = SortService::sortBy($activities, $_SESSION['activity_order_by'],  $_SESSION['activity_order_vector']);
+}
+
+if(isset($_POST['search_bar_input_serach'])) {
+    $_SESSION['search_bar_input_activity'] = $_POST['search_bar_input_serach'];
+    $_SESSION['search_bar_option_activity'] = $_POST['search_bar_option_serach'];
+    $_SESSION['search_bar_field_activity'] = $_POST['search_bar_field_serach'];
+}
+
+if(isset($_SESSION['search_bar_input_activity']) && isset($_SESSION['search_bar_option_activity']) && isset($_SESSION['search_bar_field_activity'])) {
+    $activities = SearchService::search($activities, $_SESSION['search_bar_field_activity'], $_SESSION['search_bar_option_activity'], $_SESSION['search_bar_input_activity']);
+}
 
 $pagination = PaginationService::paginate($activities);
 
@@ -44,6 +72,34 @@ foreach($places as $place) {
     </div>
 
     <button type="button" id="calendarFormModalAddGridButton" class="btn btn-primary" data-toggle="modal" data-target="#calendarFormModalAddGrid" data-places="<?= implode("|,|", $placeData) ?>"><?= $service->langData['add_new'] ?></button>
+
+    <div class="my-plugin-search-bar">
+        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_field_serach" aria-label="Select field">
+                    <option value="id" selected>Id</option>
+                    <option value="name"><?= $service->langData['title_label_grid'] ?></option>
+                    <option value="type"><?= $service->langData['activity_type_place'] ?></option>
+                    <option value="startAt"><?= $service->langData['add_activity_time_start'] ?></option>
+                    <option value="dates"><?= $service->langData['grid_activity_days'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <select class="form-control my-plugin-search-bar-input" name="search_bar_option_serach" aria-label="Select option">
+                    <option selected value="option_serach_1"><?= $service->langData['search_bar_option_serach1'] ?></option>
+                    <option value="option_serach_2"><?= $service->langData['search_bar_option_serach2'] ?></option>
+                    <option value="option_serach_3"><?= $service->langData['search_bar_option_serach3'] ?></option>
+                </select>
+            </div>
+            <div style="float: left;">
+                <input class="form-control my-plugin-search-bar-input" name="search_bar_input_serach" required type="search" placeholder="<?= $service->langData['search'] ?>" aria-label="Search">
+            </div>
+            <div style="float: left;">
+                <button class="btn btn-primary btn-search my-plugin-search-bar-button" type="submit"><?= $service->langData['search_btn'] ?></button>
+            </div>
+            <div style="clear: both;"></div>
+        </form>
+    </div>
 
     <div class="d-flex justify-content-center">
         <div class="modal fade" id="calendarFormModalAddGrid" tabindex="-1" role="dialog" aria-labelledby="calendarFormModalAddGrid" aria-hidden="true">
@@ -213,12 +269,48 @@ foreach($places as $place) {
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col"><?= $service->langData['title_label_grid'] ?></th>
-                    <th scope="col"><?= $service->langData['activity_type_place'] ?></th>
-                    <th scope="col"><?= $service->langData['add_activity_time_start'] ?></th>
-                    <th scope="col"><?= $service->langData['grid_activity_days'] ?></th>
-                    <th scope="col"><?= $service->langData['activity_is_active'] ?></th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+                            <input type="hidden" name="activity_order_by" value="id">
+                            <input type="hidden" name="activity_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;">Id</a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+                            <input type="hidden" name="activity_order_by" value="name">
+                            <input type="hidden" name="activity_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['title_label_grid'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+                            <input type="hidden" name="activity_order_by" value="type">
+                            <input type="hidden" name="activity_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['activity_type_place'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+                            <input type="hidden" name="activity_order_by" value="startAt">
+                            <input type="hidden" name="activity_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['add_activity_time_start'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+                            <input type="hidden" name="activity_order_by" value="dates">
+                            <input type="hidden" name="activity_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['grid_activity_days'] ?></a>
+                        </form>
+                    </th>
+                    <th scope="col">
+                        <form method="POST" action="<?= site_url() . '/wp-admin/admin.php?page=calendar-plugin-submenu-grid' ?>">
+                            <input type="hidden" name="activity_order_by" value="isActive">
+                            <input type="hidden" name="activity_order_vector" value="<?= $order_vector ?>">
+                            <a href="" aria-label="submit form link" onclick="this.closest('form').submit();return false;"><?= $service->langData['activity_is_active'] ?></a>
+                        </form>
+                    </th>
                     <th scope="col"><?= $service->langData['edit_label'] ?></th>
                     <th scope="col"><?= $service->langData['delete_label'] ?></th>
                 </tr>
@@ -232,7 +324,7 @@ foreach($places as $place) {
                             echo "<td>" . $activity->type . "</td>";
                             echo "<td>" . $activity->startAt . "</td>";
 
-                            $days = $days = $activity->date;
+                            $days = $activity->date;
                             if($activity->date === null && $activity->day !== null) {
                                 $tempDays = [];
                                 foreach(explode(',', $activity->day) as $element) {
