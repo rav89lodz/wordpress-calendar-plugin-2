@@ -215,6 +215,8 @@ return [
         'main_menu_field25_description' => 'Check if you want to set a color for the tile when the class enrollment limit is reached',
         'main_menu_field26_name' => 'Select tile color when limit is reached',
         'main_menu_field26_description' => 'Select the color you want to highlight the tile in the calendar when the class registration limit is reached',
+        'main_menu_field27_name' => 'Deleting the last hour',
+        'main_menu_field27_description' => 'Check this box if you don`t want the last hour in the calendar to be displayed',
         'main_menu_textarea_field_placeholder' => 'Enter the message content',
         'short_code_activity_place' => 'Use this code [short_code] to display a calendar with data for the selected location on the page',
         'activity_place_title' => 'Activity locations',

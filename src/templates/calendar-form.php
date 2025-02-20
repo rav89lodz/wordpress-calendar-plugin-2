@@ -84,6 +84,7 @@ if($calendarService->calendar->get_calendar_captcha_site_key() === null && isset
 <input type="hidden" id="get_rest_url" value="<?= get_rest_url(null, 'v1') ?>">
 <input type="hidden" id="calendar_grid_short_code" value="<?= $insertShort ?>">
 <input type="hidden" id="calendar_grid_interval" value="<?= $calendarService->calendar->get_calendar_interval() ?>">
+<input type="hidden" id="calendar_grid_last_hour" value="<?= $calendarService->calendar->get_last_hour_on_grid() ?>">
 
 <div id="calendar_form_grid1" class="mt-5 mb-5 d-flex justify-content-center">
     <?php if ($calendarService->calendar->get_calendar_one_day_view() === true): ?>

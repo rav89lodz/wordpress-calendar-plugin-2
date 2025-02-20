@@ -27,6 +27,7 @@ class MainSettingsModel extends Model
     public $removeAfterLimitReached;
     public $limitReachedColor;
     public $limitReachedColorValue;
+    public $lastHourOnGrid;
     public $captchaSiteKey;
     public $captchaSecretKey;
 
@@ -59,6 +60,7 @@ class MainSettingsModel extends Model
         $this->removeAfterLimitReached = false;
         $this->limitReachedColor = false;
         $this->limitReachedColorValue = null;
+        $this->lastHourOnGrid = false;
         $this->captchaSiteKey = null;
         $this->captchaSecretKey = null;
 
@@ -144,6 +146,9 @@ class MainSettingsModel extends Model
                     break;
                 case 'calendar_plugin_limit_reached_color_value':
                     $this->limitReachedColorValue = $value;
+                    break;
+                case 'calendar_plugin_last_hour_on_grid':
+                    $this->lastHourOnGrid = $value;
                     break;
                 case 'calendar_plugin_captcha_site_key':
                     $this->captchaSiteKey = $value;

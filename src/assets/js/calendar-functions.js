@@ -135,3 +135,21 @@ function calendar_form_submit(url, object_name) {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(JSON.stringify(create_calendar_data(object_name)));
 }
+
+function remove_last_hour_vertical() {
+    let calendar_form_table = document.querySelector('#calendar_form_table');
+    if(calendar_form_table) {
+        let row_count = calendar_form_table.rows.length;
+        calendar_form_table.deleteRow(row_count -1);
+    }
+}
+
+function remove_last_hour_horizontal() {
+    let calendar_form_table = document.querySelector('#calendar_form_table');
+    if(calendar_form_table) {
+        let rows = calendar_form_table.rows;
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].deleteCell(rows[i].cells.length - 1);
+        }
+    }
+}

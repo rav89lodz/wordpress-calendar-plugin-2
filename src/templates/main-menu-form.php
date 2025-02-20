@@ -137,6 +137,18 @@ SessionService::destroyAllCalendarPluginSession();
 
                     <div class="form-check admin-field-mb">
                         <div class="admin-check-input">
+                            <input class="form-check-input admin-field-checkbox" type="checkbox" value="1" id="calendar_plugin_last_hour_on_grid"
+                                name="calendar_plugin_last_hour_on_grid" <?= $model !== null && isset($model->lastHourOnGrid) && boolval($model->lastHourOnGrid) === true ? 'checked': '' ?>>
+                            <input type='hidden' value='0' name='calendar_plugin_last_hour_on_grid'>
+                            <label class="form-check-label" for="calendar_plugin_last_hour_on_grid"><?= $service->langData['main_menu_field27_name'] ?></label>
+                        </div>
+                        <small class="text-muted w-100 admin-field-text-small"><?= $service->langData['main_menu_field27_description'] ?></small>
+                    </div>
+
+                    <hr class="hr2">
+
+                    <div class="form-check admin-field-mb">
+                        <div class="admin-check-input">
                             <input class="form-check-input admin-field-checkbox" type="checkbox" value="1" id="calendar_plugin_duration_time_on_grid"
                                 name="calendar_plugin_duration_time_on_grid" <?= $model !== null && isset($model->durationTimeOnGrid) && boolval($model->durationTimeOnGrid) === true ? 'checked': '' ?>>
                             <input type='hidden' value='0' name='calendar_plugin_duration_time_on_grid'>

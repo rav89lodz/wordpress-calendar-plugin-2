@@ -89,6 +89,7 @@ class ValidationService
             case 'excluded_activity_is_active':
             case 'calendar_plugin_remove_after_limit_reached':
             case 'calendar_plugin_limit_reached_color':
+            case 'calendar_plugin_last_hour_on_grid':
                 return $this->validator->validation_sequence_for_checkbox($value);
             case 'calendar_plugin_cell_min_height':
             case 'calendar_plugin_grid_width':

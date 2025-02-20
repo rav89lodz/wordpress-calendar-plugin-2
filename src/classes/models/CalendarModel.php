@@ -30,6 +30,7 @@ class CalendarModel extends Model
     private $removeAfterLimitReached;
     private $limitReachedColor;
     private $limitReachedColorValue;
+    private $lastHourOnGrid;
     private $calendarCaptchaSiteKey;
     private $calendarCaptchaSecretKey;
 
@@ -62,6 +63,7 @@ class CalendarModel extends Model
         $this->calendarInterval = $this->set_calendar_interval_option();
         $this->calendarReservation = $this->set_calendar_option('makeRsvByCalendar');
         $this->durationOnGrid = $this->set_calendar_option('durationTimeOnGrid');
+        $this->lastHourOnGrid = $this->set_calendar_option('lastHourOnGrid');
         $this->placeActivityOnGrid = $this->set_calendar_option('activityPlaceOnGrid');
         $this->startTimeOnGrid = $this->set_calendar_option('startTimeOnGrid');
         $this->endTimeOnGrid = $this->set_calendar_option('endTimeOnGrid');
@@ -167,6 +169,15 @@ class CalendarModel extends Model
      */
     public function get_duration_on_grid() {
         return $this->durationOnGrid;
+    }
+
+    /**
+     * Get lastHourOnGrid
+     * 
+     * @return bool
+     */
+    public function get_last_hour_on_grid() {
+        return $this->lastHourOnGrid;
     }
 
     /**

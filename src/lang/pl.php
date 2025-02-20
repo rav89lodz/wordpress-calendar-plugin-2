@@ -215,6 +215,8 @@ return [
         'main_menu_field25_description' => 'Zaznacz, jeśli chcesz, ustawić kolor dla kafelka po osiągnięciu limitu zapisów na zajęcia',
         'main_menu_field26_name' => 'Wybierz kolor kafelka po osiągnięciu limitu',
         'main_menu_field26_description' => 'Wybierz kolor, którym chcesz wyróżnić kafelek w kalendarzu, po osiągnięciu limitu zapisów na zajęcia',
+        'main_menu_field27_name' => 'Usuwanie ostatniej godziny',
+        'main_menu_field27_description' => 'Zaznacz, jeśli chcesz, żeby ostatnia godzina w kalendarzu nie była wyświetlana',
         'main_menu_textarea_field_placeholder' => 'Wpisz treść wiadomości',
         'short_code_activity_place' => 'Użyj tego kodu [short_code], żeby wyświetlić na stronie kalendarz z danymi dla wybranego miejsca',
         'activity_place_title' => 'Miejsca zajęć',

@@ -213,6 +213,17 @@ function modal_setup() {
             }
         });
     }
+
+    let calendar_grid_last_hour = document.querySelector('#calendar_grid_last_hour');
+    if(calendar_grid_last_hour !== null && calendar_grid_last_hour.value == true) {
+        let grid_vector = document.querySelector('#grid_vector');
+        if(grid_vector !== null && grid_vector.value == "V") {
+            remove_last_hour_vertical();
+        }
+        if(grid_vector !== null && grid_vector.value == "H") {
+            remove_last_hour_horizontal();
+        }
+    }
 }
 
 function fluent_background_setup() {  
